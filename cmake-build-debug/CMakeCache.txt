@@ -156,7 +156,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=3D
+CMAKE_PROJECT_NAME:STATIC=ShadowDrawGUI
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -225,6 +225,12 @@ ProcessorCount_cmd_getconf:FILEPATH=/usr/bin/getconf
 
 //Path to a program.
 ProcessorCount_cmd_sysctl:FILEPATH=/sbin/sysctl
+
+//Value Computed by CMake
+ShadowDrawGUI_BINARY_DIR:STATIC=/home/stephan/Uni/3DRetrieval_ShadowDrawGUI/cmake-build-debug
+
+//Value Computed by CMake
+ShadowDrawGUI_SOURCE_DIR:STATIC=/home/stephan/Uni/3DRetrieval_ShadowDrawGUI
 
 
 ########################

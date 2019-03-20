@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named 3D
+# Target rules for targets named ShadowDrawGUI
 
 # Build rule for target.
-3D: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 3D
-.PHONY : 3D
+ShadowDrawGUI: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ShadowDrawGUI
+.PHONY : ShadowDrawGUI
 
 # fast build rule for target.
-3D/fast:
-	$(MAKE) -f CMakeFiles/3D.dir/build.make CMakeFiles/3D.dir/build
-.PHONY : 3D/fast
+ShadowDrawGUI/fast:
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/build
+.PHONY : ShadowDrawGUI/fast
 
 main.o: main.cpp.o
 
@@ -129,7 +129,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	$(MAKE) -f CMakeFiles/3D.dir/build.make CMakeFiles/3D.dir/main.cpp.o
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -138,7 +138,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	$(MAKE) -f CMakeFiles/3D.dir/build.make CMakeFiles/3D.dir/main.cpp.i
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -147,7 +147,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	$(MAKE) -f CMakeFiles/3D.dir/build.make CMakeFiles/3D.dir/main.cpp.s
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -157,7 +157,7 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... rebuild_cache"
-	@echo "... 3D"
+	@echo "... ShadowDrawGUI"
 	@echo "... edit_cache"
 	@echo "... main.o"
 	@echo "... main.i"

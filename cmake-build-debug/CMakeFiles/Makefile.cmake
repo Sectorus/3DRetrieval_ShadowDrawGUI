@@ -52,5 +52,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/3D.dir/DependInfo.cmake"
+  "CMakeFiles/ShadowDrawGUI.dir/DependInfo.cmake"
   )
