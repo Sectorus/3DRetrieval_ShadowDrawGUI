@@ -7,6 +7,10 @@
 
 #include <QtWidgets>
 #include <QtGui>
+#include <QVBoxLayout>
+#include <QGraphicsView>
+#include <QGraphicsTextItem>
+#include <QGraphicsScene>
 
 #include <fstream>
 #include <iostream>
@@ -25,7 +29,14 @@ int main(int argc, char **argv) {
     //QT Library Dependency Test Code
     QApplication a(argc, argv);
     QWidget window;
-    window.resize(320, 240);
+    QVBoxLayout *layout = new QVBoxLayout(&window);
+    QGraphicsScene scene;
+    QGraphicsView view(&scene);
+    QGraphicsPixmapItem item(QPixmap("img/test.jpg"));
+    scene.addItem(&item);
+    layout->addWidget(&view);
+
+    window.resize(800, 600);
     window.show();
     window.setWindowTitle(QApplication::translate("toplevel", "QTWidget Test"));
 
@@ -64,5 +75,6 @@ int main(int argc, char **argv) {
         if (key == 27 || key == 'q' || key == 'Q') // 'ESC'
             break;
     }
+    delete layout;
     return 0;
 }
