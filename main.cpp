@@ -4,6 +4,10 @@
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
+
+#include <QtWidgets>
+#include <QtGui>
+
 #include <fstream>
 #include <iostream>
 
@@ -17,6 +21,15 @@ static void help() {
 }
 
 int main(int argc, char **argv) {
+
+    //QT Library Dependency Test Code
+    QApplication a(argc, argv);
+    QWidget window;
+    window.resize(320, 240);
+    window.show();
+    window.setWindowTitle(QApplication::translate("toplevel", "QTWidget Test"));
+
+    //OpenCV Library Dependency Test Code
     CommandLineParser parser(argc, argv, "{help h||}");
     if (parser.has("help")) {
         help();

@@ -123,6 +123,46 @@ ShadowDrawGUI/fast:
 	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/build
 .PHONY : ShadowDrawGUI/fast
 
+#=============================================================================
+# Target rules for targets named ShadowDrawGUI_autogen
+
+# Build rule for target.
+ShadowDrawGUI_autogen: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 ShadowDrawGUI_autogen
+.PHONY : ShadowDrawGUI_autogen
+
+# fast build rule for target.
+ShadowDrawGUI_autogen/fast:
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI_autogen.dir/build.make CMakeFiles/ShadowDrawGUI_autogen.dir/build
+.PHONY : ShadowDrawGUI_autogen/fast
+
+ShadowDrawGUI_autogen/mocs_compilation.o: ShadowDrawGUI_autogen/mocs_compilation.cpp.o
+
+.PHONY : ShadowDrawGUI_autogen/mocs_compilation.o
+
+# target to build an object file
+ShadowDrawGUI_autogen/mocs_compilation.cpp.o:
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/ShadowDrawGUI_autogen/mocs_compilation.cpp.o
+.PHONY : ShadowDrawGUI_autogen/mocs_compilation.cpp.o
+
+ShadowDrawGUI_autogen/mocs_compilation.i: ShadowDrawGUI_autogen/mocs_compilation.cpp.i
+
+.PHONY : ShadowDrawGUI_autogen/mocs_compilation.i
+
+# target to preprocess a source file
+ShadowDrawGUI_autogen/mocs_compilation.cpp.i:
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/ShadowDrawGUI_autogen/mocs_compilation.cpp.i
+.PHONY : ShadowDrawGUI_autogen/mocs_compilation.cpp.i
+
+ShadowDrawGUI_autogen/mocs_compilation.s: ShadowDrawGUI_autogen/mocs_compilation.cpp.s
+
+.PHONY : ShadowDrawGUI_autogen/mocs_compilation.s
+
+# target to generate assembly for a file
+ShadowDrawGUI_autogen/mocs_compilation.cpp.s:
+	$(MAKE) -f CMakeFiles/ShadowDrawGUI.dir/build.make CMakeFiles/ShadowDrawGUI.dir/ShadowDrawGUI_autogen/mocs_compilation.cpp.s
+.PHONY : ShadowDrawGUI_autogen/mocs_compilation.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -159,6 +199,10 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... ShadowDrawGUI"
 	@echo "... edit_cache"
+	@echo "... ShadowDrawGUI_autogen"
+	@echo "... ShadowDrawGUI_autogen/mocs_compilation.o"
+	@echo "... ShadowDrawGUI_autogen/mocs_compilation.i"
+	@echo "... ShadowDrawGUI_autogen/mocs_compilation.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
