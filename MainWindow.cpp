@@ -37,6 +37,12 @@ void MainWindow::open()
     }
 }
 
+void MainWindow::openMultiple() {
+    if (maybeSave()) {
+            scribbleArea->openMultipleImages();
+    }
+}
+
 void MainWindow::save()
 {
     QAction *action = qobject_cast<QAction *>(sender());
@@ -93,6 +99,10 @@ void MainWindow::createActions()
             saveAsActs.append(action);
         }
 
+    openMultipleAct = new QAction(tr("&Open multiple..."), this);
+    connect(openMultipleAct, SIGNAL(triggered()), this, SLOT(openMultiple()));
+
+
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
@@ -123,6 +133,8 @@ void MainWindow::createMenus()
 
     fileMenu = new QMenu(tr("&File"), this);
     fileMenu->addAction(openAct);
+    fileMenu->addAction(openMultipleAct);
+
     fileMenu->addMenu(saveAsMenu);
     fileMenu->addSeparator();
     fileMenu->addAction(exitAct);

@@ -4,21 +4,19 @@
 
 #include "Blending.h"
 
-int Blending::blend() {
+cv::Mat Blending::blend() {
     double alpha = 0.5; double beta;
 
     cv::Mat src1, src2, dst;
 
-    /// Read image ( same size, same type )
     src1 = cv::imread("img/test.jpg");
     src2 = cv::imread("img/test2.jpg");
 
-
-    if( !src1.data ) { printf("Error loading src1 \n"); return -1; }
-    if( !src2.data ) { printf("Error loading src2 \n"); return -1; }
+    if( !src1.data ) { printf("Error loading src1 \n"); return src1; }
+    if( !src2.data ) { printf("Error loading src2 \n"); return src1; }
 
     /// Create Windows
-    cv::namedWindow("Linear Blend", 1);
+    //cv::namedWindow("Linear Blend", 1);
 
     int width, height;
     if(src1.cols > src2.cols) width = src1.cols;
@@ -40,6 +38,6 @@ int Blending::blend() {
     beta = ( 1.0 - alpha );
 
     cv::addWeighted(A_roi,alpha,src2, beta,0.0,out_image_roi);
-    imshow( "Linear Blend", out_image_roi );
-    return 0;
+    //imshow( "Linear Blend", out_image_roi );
+    return out_image_roi;
 }

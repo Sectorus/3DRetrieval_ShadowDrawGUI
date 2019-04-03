@@ -6,6 +6,7 @@
 #define SHADOWDRAWGUI_SCRIBBLEAREA_H
 
 #include <QtWidgets>
+#include "Blending.h"
 
 class ScribbleArea : public QWidget
 {
@@ -15,6 +16,7 @@ public:
     ScribbleArea(QWidget *parent = 0);
 
     bool openImage(const QString &fileName);
+    bool openMultipleImages();
     bool saveImage(const QString &fileName, const char *fileFormat);
     void setPenColor(const QColor &newColor);
     void setPenWidth(int newWidth);

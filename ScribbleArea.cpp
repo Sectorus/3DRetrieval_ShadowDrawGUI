@@ -28,6 +28,19 @@ bool ScribbleArea::openImage(const QString &fileName)
     return true;
 }
 
+bool ScribbleArea::openMultipleImages()
+{
+    Blending b;
+    cv::Mat img = b.blend();
+    QImage loadedImage = QImage((uchar*) img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
+    QSize newSize = loadedImage.size().expandedTo(size());
+    resizeImage(&loadedImage, newSize);
+    image = loadedImage;
+    modified = false;
+    update();
+    return true;
+}
+
 bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
 {
     QImage visibleImage = image;

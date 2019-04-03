@@ -82,9 +82,6 @@ int main(int argc, char **argv) {
     delete layout;
     return 0;
      */
-    Blending b;
-    b.blend();
-
     QApplication app(argc, argv);
     MainWindow window;
     window.show();

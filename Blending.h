@@ -11,6 +11,6 @@
 
 class Blending{
 public:
-    int blend();
+    cv::Mat blend();
 private:
 };
