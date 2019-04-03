@@ -92,7 +92,7 @@ void MainWindow::createActions()
             connect(action, SIGNAL(triggered()), this, SLOT(save()));
             saveAsActs.append(action);
         }
-        
+
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
