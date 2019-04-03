@@ -106,6 +106,8 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
         int newWidth = qMax(width() + 128, image.width());
         int newHeight = qMax(height() + 128, image.height());
         resizeImage(&image, QSize(newWidth, newHeight));
+        this->setFixedWidth(newWidth);
+        this->setFixedHeight(newHeight);
         update();
     }
     QWidget::resizeEvent(event);

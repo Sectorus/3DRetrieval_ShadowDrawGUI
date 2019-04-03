@@ -9,12 +9,22 @@
 MainWindow::MainWindow()
 {
     scribbleArea = new ScribbleArea;
-    setCentralWidget(scribbleArea);
+    QScrollArea *qScrollArea = new QScrollArea;
+    qScrollArea->setWidget(scribbleArea);
+    qScrollArea->setWidgetResizable(true);
+    qScrollArea->viewport()->setBackgroundRole(QPalette::Dark);
+    qScrollArea->viewport()->setAutoFillBackground(true);
+    qScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+    qScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+
+    setCentralWidget(qScrollArea);
 
     createActions();
     createMenus();
 
     setWindowTitle(tr("Scribble"));
+    //setFixedHeight(500);
+    //setFixedWidth(500);
     resize(500, 500);
 }
 
