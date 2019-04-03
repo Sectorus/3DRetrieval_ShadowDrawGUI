@@ -15,6 +15,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "MainWindow.h"
+
 using namespace cv;
 using namespace std;
 
@@ -26,6 +28,7 @@ static void help() {
 
 int main(int argc, char **argv) {
 
+    /*
     //QT Library Dependency Test Code
     QApplication a(argc, argv);
     QWidget window;
@@ -77,4 +80,10 @@ int main(int argc, char **argv) {
     }
     delete layout;
     return 0;
+     */
+
+    QApplication app(argc, argv);
+    MainWindow window;
+    window.show();
+    return app.exec();
 }
