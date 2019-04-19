@@ -6,12 +6,17 @@
 
 ScribbleArea::ScribbleArea(QWidget *parent)
         : QWidget(parent)
+        // imageLabel(new QLabel)
 {
     setAttribute(Qt::WA_StaticContents);
     modified = false;
     scribbling = false;
     myPenWidth = 1;
     myPenColor = Qt::black;
+    /*imageLabel->setBackgroundRole(QPalette::Base);
+    imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    imageLabel->setScaledContents(true);
+     */
 }
 
 bool ScribbleArea::openImage(const QString &fileName)
@@ -21,20 +26,31 @@ bool ScribbleArea::openImage(const QString &fileName)
         return false;
 
     QSize newSize = loadedImage.size().expandedTo(size());
-    resizeImage(&loadedImage, newSize);
+    QImage newImage(newSize, QImage::Format_RGB32);
+
+
+    newImage.fill(Qt::transparent);
+    resizeImage(&loadedImage, newSize, &newImage);
+
     image = loadedImage;
+    //setImage(image);
+
     modified = false;
     update();
     return true;
 }
+void ScribbleArea::setImage(const QImage &newImage){
+    imageLabel->setPixmap(QPixmap::fromImage(newImage));
+    update();
 
+}
 bool ScribbleArea::openMultipleImages()
 {
     Blending b;
     cv::Mat img = b.blend();
     QImage loadedImage = QImage((uchar*) img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
     QSize newSize = loadedImage.size().expandedTo(size());
-    resizeImage(&loadedImage, newSize);
+    resizeImage(&loadedImage, newSize, &layer);
     image = loadedImage;
     modified = false;
     update();
@@ -44,7 +60,7 @@ bool ScribbleArea::openMultipleImages()
 bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
 {
     QImage visibleImage = image;
-    resizeImage(&visibleImage, size());
+    resizeImage(&visibleImage, size(),&layer);
 
     if (visibleImage.save(fileName, fileFormat)) {
         modified = false;
@@ -53,7 +69,32 @@ bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
         return false;
     }
 }
+void ScribbleArea::zoomIn()
+{
+    scaleImage(1.25);
+}
 
+void ScribbleArea::zoomOut()
+{
+    scaleImage(0.8);
+}
+void ScribbleArea::scaleImage(double factor){
+    /*Q_ASSERT(imageLabel->pixmap());
+    scaleFactor *= factor;
+    imageLabel->resize(scaleFactor * imageLabel->pixmap()->size());
+
+    adjustScrollBar(scrollArea->horizontalScrollBar(), factor);
+    adjustScrollBar(scrollArea->verticalScrollBar(), factor);
+
+    zoomInAct->setEnabled(scaleFactor < 3.0);
+    zoomOutAct->setEnabled(scaleFactor > 0.333);
+     */
+    const QSize d=image.size().scaled(factor*image.width(),factor*image.height(),Qt::KeepAspectRatio);
+    //imageLabel->resize(factor * imageLabel->pixmap()->size());
+    resizeImage(&image,d,&layer);
+
+    //resizeImage(&image,newSize,&layer);
+}
 void ScribbleArea::setPenColor(const QColor &newColor)
 {
     myPenColor = newColor;
@@ -97,7 +138,8 @@ void ScribbleArea::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     QRect dirtyRect = event->rect();
-    painter.drawImage(dirtyRect, image, dirtyRect);
+    painter.drawImage(0, 0, /**imageLabel->pixmap()*/ image);
+    painter.drawImage(dirtyRect, layer, dirtyRect);
 }
 
 void ScribbleArea::resizeEvent(QResizeEvent *event)
@@ -105,7 +147,7 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
     if (width() > image.width() || height() > image.height()) {
         int newWidth = qMax(width() + 128, image.width());
         int newHeight = qMax(height() + 128, image.height());
-        resizeImage(&image, QSize(newWidth, newHeight));
+        resizeImage(&image, QSize(newWidth, newHeight),&layer);
         update();
     }
     QWidget::resizeEvent(event);
@@ -113,7 +155,7 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
 
 void ScribbleArea::drawLineTo(const QPoint &endPoint)
 {
-    QPainter painter(&image);
+    QPainter painter(&layer);
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
     painter.drawLine(lastPoint, endPoint);
@@ -125,7 +167,35 @@ void ScribbleArea::drawLineTo(const QPoint &endPoint)
     lastPoint = endPoint;
 }
 
-void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
+void ScribbleArea::resizeImage(QImage *image, const QSize &newSize,const QImage *layer)
+{
+
+    setFixedWidth(image->width());
+    setFixedHeight(image->height());
+    if (image->size() == newSize){
+        return;
+    }
+    QImage *scaledImage=image;
+    QImage newImage(newSize, QImage::Format_RGB32);
+    newImage.fill(qRgb(255, 255, 255));
+    if(image!= nullptr){
+        QImage newImage(image->size(), QImage::Format_RGB32);
+        //newImage.fill(qRgb(255, 255, 255));
+        newImage.fill(Qt::transparent);
+        *scaledImage=image->scaled(newSize,Qt::KeepAspectRatio);
+    }
+    newImage.fill(qRgb(255, 255, 255));
+
+    QPainter painter(&newImage);
+
+
+    layer=&newImage;
+
+    painter.drawImage(QPoint(0, 0), *scaledImage);
+    painter.drawImage(QPoint(0, 0),*layer);
+    //*image = newImage;
+}
+void ScribbleArea::resizePixmap(QPixmap *image, const QSize &newSize)
 {
     setFixedWidth(image->width());
     setFixedHeight(image->height());
@@ -133,9 +203,9 @@ void ScribbleArea::resizeImage(QImage *image, const QSize &newSize)
         return;
     }
 
-    QImage newImage(newSize, QImage::Format_RGB32);
+    QPixmap newImage(newSize);
     newImage.fill(qRgb(255, 255, 255));
-    QPainter painter(&newImage);
-    painter.drawImage(QPoint(0, 0), *image);
+    //QPainter painter(&newImage);
+    //painter.drawPixmap(QPoint(0, 0), *image);
     *image = newImage;
 }

@@ -24,7 +24,8 @@ public:
     bool isModified() const { return modified; }
     QColor penColor() const { return myPenColor; }
     int penWidth() const { return myPenWidth; }
-
+    void zoomIn();
+    void zoomOut();
 public slots:
     void clearImage();
 
@@ -37,14 +38,18 @@ protected:
 
 private:
     void drawLineTo(const QPoint &endPoint);
-    void resizeImage(QImage *image, const QSize &newSize);
-
+    void resizeImage(QImage *image, const QSize &newSize,const QImage *layer);
+    void resizePixmap(QPixmap *image, const QSize &newSize);
+    void scaleImage(double factor);
+    void setImage(const QImage &newImage);
     bool modified;
     bool scribbling;
     int myPenWidth;
     QColor myPenColor;
     QImage image;
     QPoint lastPoint;
+    QImage layer;
+    QLabel *imageLabel;
 };
 
 

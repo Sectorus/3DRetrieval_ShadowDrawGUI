@@ -27,7 +27,7 @@ private slots:
     void penColor();
     void penWidth();
     void about();
-
+    void zoomIn();
 private:
     void createActions();
     void createMenus();
@@ -40,7 +40,6 @@ private:
     QMenu *fileMenu;
     QMenu *optionMenu;
     QMenu *helpMenu;
-
     QAction *openAct;
     QAction *openMultipleAct;
 
@@ -51,6 +50,7 @@ private:
     QAction *clearScreenAct;
     QAction *aboutAct;
     QAction *aboutQtAct;
+    QAction *inZoom;
 };
 
 
