@@ -25,27 +25,23 @@ void EdgeDetector::CannyThreshold()
 
     /// Draw contours
     cv::Mat drawing = cv::Mat::zeros( canny_output.size(), CV_8UC3 );
+    drawing = cv::Scalar(255, 255, 255);
+
+    /*
+    int index_max = 0;
     for( int i = 0; i< contours.size(); i++ )
     {
-        cv::Scalar color = cv::Scalar( rng.uniform(0, 255), rng.uniform(0,255), rng.uniform(0,255) );
-        drawContours( drawing, contours, i, color, 2, 8, hierarchy, 0, cv::Point() );
+        if(contours.at(i).size() > contours.at(index_max).size()){
+            index_max = i;
+        }
+    }*/
+
+    for( int i = 0; i< contours.size(); i++ ) {
+        cv::Scalar color = cv::Scalar(0, 0, 0);
+        drawContours(drawing, contours, i, color, 2, 8, hierarchy, 0, cv::Point());
     }
 
     /// Show in a window
     namedWindow( "Contours", cv::WINDOW_AUTOSIZE );
     imshow( "Contours", drawing );
-}
-
-void EdgeDetector::Dilation()
-{
-    int dilation_type;
-    if( dilation_elem == 0 ){ dilation_type = cv::MORPH_RECT; }
-    else if( dilation_elem == 1 ){ dilation_type = cv::MORPH_CROSS; }
-    else if( dilation_elem == 2) { dilation_type = cv::MORPH_ELLIPSE; }
-
-    cv::Mat element = getStructuringElement( dilation_type,
-                                         cv::Size( 2*dilation_size + 1, 2*dilation_size+1 ),
-                                         cv::Point( dilation_size, dilation_size ) );
-    /// Apply the dilation operation
-   // dilate( detected_edges, dilation_dst, element );
 }

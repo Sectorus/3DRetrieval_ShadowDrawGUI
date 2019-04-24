@@ -18,16 +18,8 @@ public:
     void detectEdges(cv::Mat img);
 private:
     cv::Mat src; cv::Mat src_gray;
-    int thresh = 100;
-    int max_thresh = 255;
-
-    int dilation_elem = 0;
-    int dilation_size = 0;
-    int const max_elem = 2;
-    int const max_kernel_size = 21;
-
+    int thresh = 300;
     void CannyThreshold();
-    void Dilation();
 };
 
 #endif //SHADOWDRAWGUI_EDGEDETECTOR_H
