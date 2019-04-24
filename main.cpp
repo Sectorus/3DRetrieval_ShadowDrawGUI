@@ -17,6 +17,7 @@
 
 #include "MainWindow.h"
 #include "Blending.h"
+#include "EdgeDetector.h"
 
 using namespace cv;
 using namespace std;
@@ -82,8 +83,15 @@ int main(int argc, char **argv) {
     delete layout;
     return 0;
      */
+    /*
     QApplication app(argc, argv);
-    MainWindow window;
+    MainWindow window;imread(
     window.show();
     return app.exec();
+     */
+
+    EdgeDetector ed;
+    ed.detectEdges( imread("img/cva_athens_5_43_1-e.jpg") );
+    waitKey(0);
+
 }

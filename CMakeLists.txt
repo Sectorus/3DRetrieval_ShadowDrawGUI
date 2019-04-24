@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.0)
 project(ShadowDrawGUI)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -14,6 +14,6 @@ find_package(Qt5Widgets CONFIG REQUIRED)
 include_directories(img)
 file(COPY img DESTINATION ${CMAKE_CURRENT_BINARY_DIR} )
 
-add_executable(ShadowDrawGUI main.cpp ScribbleArea.cpp ScribbleArea.h MainWindow.cpp MainWindow.h Blending.cpp Blending.h)
+add_executable(ShadowDrawGUI main.cpp ScribbleArea.cpp ScribbleArea.h MainWindow.cpp MainWindow.h Blending.cpp Blending.h EdgeDetector.cpp EdgeDetector.h)
 target_link_libraries( ShadowDrawGUI ${OpenCV_LIBS} )
 target_link_libraries( ShadowDrawGUI Qt5::Widgets )
