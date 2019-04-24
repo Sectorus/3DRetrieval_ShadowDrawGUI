@@ -14,6 +14,8 @@
 
 #include <fstream>
 #include <iostream>
+#include <sys/types.h>
+#include <dirent.h>
 
 #include "MainWindow.h"
 #include "Blending.h"
@@ -21,6 +23,7 @@
 
 using namespace cv;
 using namespace std;
+
 
 static void help() {
     cout << "\nThis sample program demonstrates the use of the convexHull() function\n"
@@ -90,8 +93,28 @@ int main(int argc, char **argv) {
     return app.exec();
      */
 
+    std::string in_path = "img";
+    std::string out_path = "sketch_ref";
+
+    std::vector<std::string> stringvec;
+
+    DIR* dirp = opendir(in_path.c_str());
+    struct dirent * dp;
+    while ((dp = readdir(dirp)) != NULL) {
+        stringvec.push_back(dp->d_name);
+    }
+    closedir(dirp);
+
     EdgeDetector ed;
-    ed.detectEdges( imread("img/cva_athens_5_43_1-e.jpg") );
+
+    for(int i = 2; i < stringvec.size(); i++)
+    {
+        auto file = stringvec.at(i);
+        cv::Mat contour = ed.detectEdges( imread(in_path+"/"+file) );
+        imwrite( out_path+"/"+file, contour );
+    }
+
     waitKey(0);
 
 }
+

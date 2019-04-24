@@ -15,11 +15,11 @@
 
 class EdgeDetector{
 public:
-    void detectEdges(cv::Mat img);
+    cv::Mat detectEdges(cv::Mat img);
 private:
     cv::Mat src; cv::Mat src_gray;
     int thresh = 300;
-    void CannyThreshold();
+    cv::Mat CannyThreshold();
 };
 
 #endif //SHADOWDRAWGUI_EDGEDETECTOR_H
