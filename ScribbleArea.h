@@ -7,6 +7,7 @@
 
 #include <QtWidgets>
 #include "Blending.h"
+#include "ResourceManager.h"
 
 class ScribbleArea : public QWidget
 {

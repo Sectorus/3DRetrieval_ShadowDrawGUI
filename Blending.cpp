@@ -4,16 +4,18 @@
 
 #include "Blending.h"
 
-cv::Mat Blending::blend() {
+cv::Mat Blending::blend(cv::Mat src1, cv::Mat src2) {
     double alpha = 0.5; double beta;
 
-    cv::Mat src1, src2, dst;
+    cv::Mat dst;
 
+    /*
     src1 = cv::imread("img/test.jpg");
     src2 = cv::imread("img/test2.jpg");
 
     if( !src1.data ) { printf("Error loading src1 \n"); return src1; }
     if( !src2.data ) { printf("Error loading src2 \n"); return src1; }
+    */
 
     /// Create Windows
     //cv::namedWindow("Linear Blend", 1);

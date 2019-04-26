@@ -20,6 +20,7 @@
 #include "MainWindow.h"
 #include "Blending.h"
 #include "EdgeDetector.h"
+#include "ResourceManager.h"
 
 using namespace cv;
 using namespace std;
@@ -86,12 +87,6 @@ int main(int argc, char **argv) {
     delete layout;
     return 0;
      */
-    /*
-    QApplication app(argc, argv);
-    MainWindow window;imread(
-    window.show();
-    return app.exec();
-     */
 
     std::string in_path = "img";
     std::string out_path = "sketch_ref";
@@ -114,7 +109,10 @@ int main(int argc, char **argv) {
         imwrite( out_path+"/"+file, contour );
     }
 
-    waitKey(0);
-
+    ResourceManager::instance()->loadResourcesFromDirectory(out_path);
+    QApplication app(argc, argv);
+    MainWindow window;
+    window.show();
+    return app.exec();
 }
 

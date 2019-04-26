@@ -7,10 +7,11 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/highgui.hpp"
 #include <iostream>
+
 #endif //SHADOWDRAWGUI_BLENDING_H
 
 class Blending{
 public:
-    cv::Mat blend();
+    cv::Mat blend(cv::Mat src1, cv::Mat src2);
 private:
 };
