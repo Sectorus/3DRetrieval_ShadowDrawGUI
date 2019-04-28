@@ -31,11 +31,7 @@ bool ScribbleArea::openImage(const QString &fileName)
 bool ScribbleArea::openMultipleImages()
 {
     Blending b;
-    cv::Mat img = ResourceManager::instance()->getResourceImages().at(0);
-    for(int i = 1; i < ResourceManager::instance()->getResourceImages().size(); i++)
-    {
-        img = b.blend(img, ResourceManager::instance()->getResourceImages().at(i));
-    }
+    cv::Mat img = b.blend();
 
     QImage loadedImage = QImage((uchar*) img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
     QSize newSize = loadedImage.size().expandedTo(size());
