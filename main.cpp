@@ -21,6 +21,7 @@
 #include "Blending.h"
 #include "EdgeDetector.h"
 #include "ResourceManager.h"
+#include "Similarity.h"
 
 using namespace cv;
 using namespace std;
@@ -113,6 +114,22 @@ int main(int argc, char **argv) {
     QApplication app(argc, argv);
     MainWindow window;
     window.show();
+
+
+    //Quick test for similarity class
+    cv::Mat img1 = cv::imread("sketch_ref/cva_athens_5_1_1-e.jpg");
+    cv::Mat img2 = cv::imread("sketch_ref/cva_athens_5_1_2-e.jpg");
+
+    Similarity sim;
+    cv::Scalar s1 = sim.getMSSIM(img1, img1);
+    cv::Scalar s2 = sim.getMSSIM(img1, img2);
+
+    double similarity_score1 = sum(s1)[0]/3;
+    double similarity_score2 = sum(s2)[0]/3;
+
+    std::cout << "Similarity score of same image: " << similarity_score1*100 << "%" << std::endl;
+    std::cout << "Similarity score of different images: " << similarity_score2*100 << "%" << std::endl;
+
     return app.exec();
 }
 
