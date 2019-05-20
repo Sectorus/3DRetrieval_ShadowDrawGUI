@@ -136,6 +136,7 @@ void MainWindow::createActions()
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     inZoom=new QAction(tr("&Zoom in"),this);
+    inZoom->setShortcut(tr("Ctrl+P"));
     connect(inZoom,SIGNAL(triggered()),this,SLOT(zoomIn()));
 }
 
