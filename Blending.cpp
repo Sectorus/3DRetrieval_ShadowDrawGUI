@@ -8,14 +8,15 @@ cv::Mat Blending::blend() {
     /*
     src1 = cv::imread("img/test.jpg");
     src2 = cv::imread("img/test2.jpg");
-
+    printf("aver1");
     if( !src1.data ) { printf("Error loading src1 \n"); return src1; }
     if( !src2.data ) { printf("Error loading src2 \n"); return src1; }
 
 
+    printf("aver2");
     /// Create Windows
     //cv::namedWindow("Linear Blend", 1);
-
+    printf("aver3");
     int width, height;
     if(src1.cols > src2.cols) width = src1.cols;
     else width = src2.cols;
@@ -25,7 +26,7 @@ cv::Mat Blending::blend() {
 
     cv::Mat img1(height, width, CV_8UC3, cv::Scalar(0, 0, 0));
     src1.copyTo(img1(cv::Rect(0,0,src1.cols, src1.rows)));
-
+    printf("aver4");
     int min_x = ( img1.cols - src2.cols)/2;
     int min_y = ( img1.rows - src2.rows)/2;
 
@@ -36,6 +37,7 @@ cv::Mat Blending::blend() {
     beta = ( 1.0 - alpha);
 
     cv::addWeighted(A_roi,alpha,src2, beta,0.0,out_image_roi);
+    printf("aver5");
     //imshow( "Linear Blend", out_image_roi );
     return out_image_roi;*/
 

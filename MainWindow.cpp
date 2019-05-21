@@ -17,12 +17,13 @@ MainWindow::MainWindow()
     qScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     qScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setCentralWidget(qScrollArea);
-
+   // printf("jeje");
     createActions();
     createMenus();
-
+   // printf("jeje");
     setWindowTitle(tr("Scribble"));
     resize(500, 500);
+    // printf("jejeje");
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -73,6 +74,9 @@ void MainWindow::penWidth()
                                         1, 50, 1, &ok);
     if (ok)
         scribbleArea->setPenWidth(newWidth);
+}
+void MainWindow::zoomIn(){
+    scribbleArea->zoomIn();
 }
 
 void MainWindow::about()
@@ -130,6 +134,14 @@ void MainWindow::createActions()
 
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
+
+    inZoom=new QAction(tr("&Zoom in"),this);
+    inZoom->setShortcut(tr("Ctrl+P"));
+    connect(inZoom,SIGNAL(triggered()),this,SLOT(zoomIn()));
+
+    goBackAct=new QAction(tr("&Undo"),this);
+    goBackAct->setShortcut(tr("Ctrl+Z"));
+    connect(goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
 }
 
 void MainWindow::createMenus()
@@ -151,6 +163,8 @@ void MainWindow::createMenus()
     optionMenu->addAction(penWidthAct);
     optionMenu->addSeparator();
     optionMenu->addAction(clearScreenAct);
+    optionMenu->addAction(inZoom);
+    optionMenu->addAction(goBackAct);
 
     helpMenu = new QMenu(tr("&Help"), this);
     helpMenu->addAction(aboutAct);
@@ -159,6 +173,9 @@ void MainWindow::createMenus()
     menuBar()->addMenu(fileMenu);
     menuBar()->addMenu(optionMenu);
     menuBar()->addMenu(helpMenu);
+}
+void MainWindow::goBack(){
+    scribbleArea->goBack();
 }
 
 bool MainWindow::maybeSave()

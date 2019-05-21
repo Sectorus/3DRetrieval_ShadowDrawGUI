@@ -8,6 +8,8 @@
 #include <QtWidgets>
 #include "Blending.h"
 #include "ResourceManager.h"
+#include <vector>
+#include <iostream>
 
 class ScribbleArea : public QWidget
 {
@@ -15,7 +17,7 @@ class ScribbleArea : public QWidget
 
 public:
     ScribbleArea(QWidget *parent = 0);
-
+    float nowFactor;
     bool openImage(const QString &fileName);
     bool openMultipleImages();
     bool saveImage(const QString &fileName, const char *fileFormat);
@@ -25,7 +27,9 @@ public:
     bool isModified() const { return modified; }
     QColor penColor() const { return myPenColor; }
     int penWidth() const { return myPenWidth; }
-
+    void zoomIn();
+    void zoomOut();
+    void goBack();
 public slots:
     void clearImage();
 
@@ -37,15 +41,23 @@ protected:
     void resizeEvent(QResizeEvent *event) override;
 
 private:
-    void drawLineTo(const QPoint &endPoint);
-    void resizeImage(QImage *image, const QSize &newSize);
-
+    void drawLineTo(const QPointF &endPoint);
+    void resizeImage(QImage *image, const QSize &newSize,const QPixmap *layer);
+    void resizePixmap(QPixmap *image, const QSize &newSize);
+    void scaleImage(float factor);
+    void setImage(const QImage &newImage);
     bool modified;
     bool scribbling;
     int myPenWidth;
     QColor myPenColor;
     QImage image;
-    QPoint lastPoint;
+    QPointF lastPointF;
+    QPixmap layer;
+    QLabel *imageLabel;
+    QLabel *drawLabel;
+    std::vector<std::pair<QPointF,QPointF>> points;
+    int pointsSize;
+    int lastP;
 };
 
 

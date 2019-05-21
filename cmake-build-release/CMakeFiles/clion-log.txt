@@ -1,0 +1,9 @@
+"C:\Program Files\JetBrains\CLion 2019.1\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=C:\Qt\5.12.1\mingw73_64\lib\cmake -G "CodeBlocks - MinGW Makefiles" C:\Users\Luis\CLionProjects\3DRetrieval_ShadowDrawGUI
+-- OpenCV ARCH: x64
+-- OpenCV RUNTIME: mingw
+-- OpenCV STATIC: OFF
+-- Found OpenCV 3.4.5 in C:/opencv2/opencv-3.4.5/mingw-bin/install/x64/mingw/lib
+-- You might need to add C:/opencv2/opencv-3.4.5/mingw-bin/install/x64/mingw/bin to your PATH to be able to run your applications.
+-- Configuring done
+-- Generating done
+-- Build files have been written to: C:/Users/Luis/CLionProjects/3DRetrieval_ShadowDrawGUI/cmake-build-release
