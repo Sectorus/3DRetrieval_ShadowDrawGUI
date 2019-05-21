@@ -28,6 +28,7 @@ public:
     int penWidth() const { return myPenWidth; }
     void zoomIn();
     void zoomOut();
+    void goBack();
 public slots:
     void clearImage();
 
@@ -54,6 +55,8 @@ private:
     QLabel *imageLabel;
     QLabel *drawLabel;
     std::vector<std::pair<QPointF,QPointF>> points;
+    int pointsSize;
+    int lastP;
 };
 
 

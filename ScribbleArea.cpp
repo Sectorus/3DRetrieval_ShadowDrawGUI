@@ -10,6 +10,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
          drawLabel(new QLabel)
 {
     setStyleSheet("border: 1px solid red");
+    pointsSize=0;
     nowFactor=1.0;
     setAttribute(Qt::WA_StaticContents);
     modified = false;
@@ -31,7 +32,7 @@ bool ScribbleArea::openImage(const QString &fileName)
     QImage loadedImage;
     if (!loadedImage.load(fileName))
         return false;
-
+    pointsSize=0;
     QSize newSize = loadedImage.size().expandedTo(size());
     QImage newImage(newSize, QImage::Format_RGB32);
     std::cout<<newSize.width();
@@ -122,6 +123,17 @@ void ScribbleArea::scaleImage(float factor){
     drawLabel->resize(factor * imageLabel->size());
     setFixedWidth(imageLabel->width());
     setFixedHeight(imageLabel->height());
+    QPixmap l(imageLabel->size()*nowFactor);
+    layer=l;
+    layer.fill(Qt::transparent);
+    QPainter painter(&layer);
+    painter.eraseRect(layer.rect());
+    layer.fill(Qt::transparent);
+    drawLabel->setPixmap(layer);
+    for(int i=0;i<lastP;i++){
+        painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
+    }
+
     QApplication::processEvents();
 }
 void ScribbleArea::setPenColor(const QColor &newColor)
@@ -199,19 +211,39 @@ void ScribbleArea::drawLineTo(const QPointF &endPointF)
         //std::cout << points[i].first.x() << " "
         //     << points[i].first.y() << endl;
     }
-    std::cout<<nowFactor<<"\n";
+    //std::cout<<nowFactor<<"\n";
 
 
-    painter.drawLine(lastPointF/nowFactor, endPointF/nowFactor);
+    painter.drawLine(lastPointF, endPointF);
     points.push_back(std::make_pair(lastPointF,endPointF));
+    pointsSize++;
+    lastP++;
     modified = true;
-
+    std::cout << painter.viewport().size().width()<<","<<painter.viewport().size().height()<<"\n";
     int rad = (myPenWidth / 2) + 2;
     //update(QRect(lastPoint, endPoint).normalized()
      //              .adjusted(-rad, -rad, +rad, +rad));
-    lastPointF = endPointF/nowFactor;
-}
 
+    painter.setPen(QPen(Qt::green, 20, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
+    //painter.drawPoint(endPointF);
+    painter.setPen(QPen(Qt::red, 20, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
+    //painter.drawPoint(lastPointF);
+
+    lastPointF = endPointF;
+
+}
+void ScribbleArea::goBack(){
+    lastP=lastP-10;
+    QPainter painter(&layer);
+    painter.eraseRect(layer.rect());
+    layer.fill(Qt::transparent);
+    drawLabel->setPixmap(layer);
+    for(int i=0;i<lastP;i++){
+        painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
+    }
+}
 void ScribbleArea::resizeImage(QImage *image, const QSize &newSize,const QPixmap *layer)
 {
 

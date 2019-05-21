@@ -28,6 +28,7 @@ private slots:
     void penWidth();
     void about();
     void zoomIn();
+    void goBack();
 private:
     void createActions();
     void createMenus();
@@ -51,6 +52,7 @@ private:
     QAction *aboutAct;
     QAction *aboutQtAct;
     QAction *inZoom;
+    QAction *goBackAct;
 };
 
 
