@@ -11,6 +11,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
 {
     setStyleSheet("border: 1px solid red");
     pointsSize=0;
+    lastP=0;
     nowFactor=1.0;
     setAttribute(Qt::WA_StaticContents);
     modified = false;
@@ -60,6 +61,7 @@ bool ScribbleArea::openImage(const QString &fileName)
     drawLabel->setParent(this);
     drawLabel->show();
     drawLabel->setStyleSheet("border: 2px solid blue");
+    imageLabel->setStyleSheet("border: 2px solid green");
     update();
     return true;
 }
@@ -121,10 +123,11 @@ void ScribbleArea::scaleImage(float factor){
     nowFactor=nowFactor*factor;
     //resizeImage(&image,newSize,&layer);
     imageLabel->resize(factor * imageLabel->size());
-    drawLabel->resize(factor * imageLabel->size());
+    drawLabel->resize(imageLabel->size());
     setFixedWidth(imageLabel->width());
     setFixedHeight(imageLabel->height());
-    QPixmap l(imageLabel->size()*nowFactor);
+    QPixmap l(imageLabel->size());
+    std::cout<<image.size().width()<<"\n";
     layer=l;
     layer.fill(Qt::transparent);
     QPainter painter(&layer);
@@ -132,6 +135,7 @@ void ScribbleArea::scaleImage(float factor){
     layer.fill(Qt::transparent);
     drawLabel->setPixmap(layer);
     for(int i=0;i<lastP;i++){
+
         painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
     }
 
@@ -212,11 +216,11 @@ void ScribbleArea::drawLineTo(const QPointF &endPointF)
         //std::cout << points[i].first.x() << " "
         //     << points[i].first.y() << endl;
     }
-    //std::cout<<nowFactor<<"\n";
+    std::cout<<nowFactor<<"\n";
 
 
     painter.drawLine(lastPointF, endPointF);
-    points.push_back(std::make_pair(lastPointF,endPointF));
+    points.push_back(std::make_pair(lastPointF/nowFactor,endPointF/nowFactor));
     pointsSize++;
     lastP++;
     modified = true;
@@ -233,10 +237,20 @@ void ScribbleArea::drawLineTo(const QPointF &endPointF)
     //painter.drawPoint(lastPointF);
 
     lastPointF = endPointF;
+    std::cout<<"layer"<<layer.size().width()<<"\n";
+    std::cout<<"dL"<<drawLabel->size().width()<<"\n";
+    std::cout<<"iL"<<imageLabel->size().width()<<"\n";
+    std::cout<<"dL2"<<drawLabel->rect().width()<<"\n";
 
 }
-void ScribbleArea::goBack(){
-    lastP=lastP-10;
+void ScribbleArea::undo(){
+    std::cout<<lastP<<"\n";
+    if (lastP>10) {
+        lastP = lastP - 10;
+    }
+    else{
+        lastP=0;
+    }
     QPainter painter(&layer);
     painter.eraseRect(layer.rect());
     layer.fill(Qt::transparent);
@@ -244,6 +258,23 @@ void ScribbleArea::goBack(){
     for(int i=0;i<lastP;i++){
         painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
     }
+}
+void ScribbleArea::redo(){
+    if(lastP+10<pointsSize){
+        lastP=lastP+10;
+    }
+    else{
+        lastP=pointsSize;
+    }
+
+    QPainter painter(&layer);
+    painter.eraseRect(layer.rect());
+    layer.fill(Qt::transparent);
+    drawLabel->setPixmap(layer);
+    for(int i=0;i<lastP;i++){
+        painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
+    }
+
 }
 void ScribbleArea::resizeImage(QImage *image, const QSize &newSize,const QPixmap *layer)
 {

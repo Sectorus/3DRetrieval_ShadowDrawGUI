@@ -78,6 +78,10 @@ void MainWindow::penWidth()
 void MainWindow::zoomIn(){
     scribbleArea->zoomIn();
 }
+void MainWindow::zoomOut(){
+    scribbleArea->zoomOut();
+}
+
 
 void MainWindow::about()
 {
@@ -136,12 +140,20 @@ void MainWindow::createActions()
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
     inZoom=new QAction(tr("&Zoom in"),this);
-    inZoom->setShortcut(tr("Ctrl+P"));
+    inZoom->setShortcut(tr("Ctrl++"));
     connect(inZoom,SIGNAL(triggered()),this,SLOT(zoomIn()));
 
-    goBackAct=new QAction(tr("&Undo"),this);
-    goBackAct->setShortcut(tr("Ctrl+Z"));
-    connect(goBackAct,SIGNAL(triggered()),this,SLOT(goBack()));
+    outZoom=new QAction(tr("&Zoom out"),this);
+    outZoom->setShortcut(tr("Ctrl+-"));
+    connect(outZoom,SIGNAL(triggered()),this,SLOT(zoomOut()));
+
+    undoAct=new QAction(tr("&Undo"),this);
+    undoAct->setShortcut(tr("Ctrl+Z"));
+    connect(undoAct,SIGNAL(triggered()),this,SLOT(undo()));
+    
+    redoAct=new QAction(tr("&redo"),this);
+    redoAct->setShortcut(tr("Ctrl+Y"));
+    connect(redoAct,SIGNAL(triggered()),this,SLOT(redo()));
 }
 
 void MainWindow::createMenus()
@@ -164,7 +176,9 @@ void MainWindow::createMenus()
     optionMenu->addSeparator();
     optionMenu->addAction(clearScreenAct);
     optionMenu->addAction(inZoom);
-    optionMenu->addAction(goBackAct);
+    optionMenu->addAction(outZoom);
+    optionMenu->addAction(undoAct);
+    optionMenu->addAction(redoAct);
 
     helpMenu = new QMenu(tr("&Help"), this);
     helpMenu->addAction(aboutAct);
@@ -174,8 +188,12 @@ void MainWindow::createMenus()
     menuBar()->addMenu(optionMenu);
     menuBar()->addMenu(helpMenu);
 }
-void MainWindow::goBack(){
-    scribbleArea->goBack();
+void MainWindow::undo(){
+    scribbleArea->undo();
+}
+
+void MainWindow::redo(){
+    scribbleArea->redo();
 }
 
 bool MainWindow::maybeSave()

@@ -29,7 +29,8 @@ public:
     int penWidth() const { return myPenWidth; }
     void zoomIn();
     void zoomOut();
-    void goBack();
+    void undo();
+    void redo();
 public slots:
     void clearImage();
 
