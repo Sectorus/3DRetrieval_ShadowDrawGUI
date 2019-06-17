@@ -33,6 +33,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     movie->start();
     resize(480,480);
     setStyleSheet("border: 1px solid red");
+    erasing=false;
 
 }
 
@@ -81,6 +82,7 @@ void ScribbleArea::setImage(const QImage &newImage){
 }
 
 void ScribbleArea::updateReferences(){
+    load->setVisible(true);
 
     //TODO clean up and move logic to other business layer
     Similarity sim;
@@ -133,7 +135,7 @@ void ScribbleArea::updateReferences(){
     imageLabel->setPixmap(QPixmap::fromImage(blendedImage));
     imageLabel->show();
     update();
-
+    load->setVisible(false);
     /*
     cv::Mat result = ResourceManager::instance()->getResourceImages().at(refs.at(0));
     for(int i = 1; i < refs.size(); i++){
@@ -215,6 +217,8 @@ void ScribbleArea::scaleImage(float factor){
     layer.fill(Qt::transparent);
     QPainter painter(&layer);
     painter.eraseRect(layer.rect());
+    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
     layer.fill(Qt::transparent);
     drawLabel->setPixmap(layer);
     for(int i=0;i<lastP;i++){
@@ -259,6 +263,7 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && scribbling) {
         drawLineTo(event->pos());
+        load->setVisible(true);
         updateReferences();
         scribbling = false;
     }
@@ -285,54 +290,98 @@ void ScribbleArea::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
     printf("resizeEvent");
 }
-
+void ScribbleArea::erase(){
+    if(erasing==false) {
+        erasing = true;
+    }
+}
+void ScribbleArea::paint(){
+    if(erasing==true){
+        erasing=false;
+    }
+}
 void ScribbleArea::drawLineTo(const QPointF &endPointF)
 {
+    if(erasing==true){
+        eraseLine(endPointF);
+    }
+    else {
+        QPainter painter(&layer);
+        painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+                            Qt::RoundJoin));
+
+        int n = points.size();
+
+        std::cout << nowFactor << "\n";
+        std::cout << points.size() << "\n";
+        if (lastP < pointsSize) {
+            points.erase(points.begin() + lastP + 1, points.begin() + points.size());
+            lastP = points.size();
+            pointsSize = lastP;
+        }
+        std::cout << points.size() << "\n";
+        std::cout << lastP << "\n";
+
+        painter.drawLine(lastPointF, endPointF);
+        points.push_back(std::make_pair(lastPointF / nowFactor, endPointF / nowFactor));
+        pointsSize++;
+        lastP++;
+        modified = true;
+        std::cout << painter.viewport().size().width() << "," << painter.viewport().size().height() << "\n";
+        int rad = (myPenWidth / 2) + 2;
+        //update(QRect(lastPoint, endPoint).normalized()
+        //              .adjusted(-rad, -rad, +rad, +rad));
+
+        painter.setPen(QPen(Qt::green, 20, Qt::SolidLine, Qt::RoundCap,
+                            Qt::RoundJoin));
+        //painter.drawPoint(endPointF);
+        painter.setPen(QPen(Qt::red, 20, Qt::SolidLine, Qt::RoundCap,
+                            Qt::RoundJoin));
+        //painter.drawPoint(lastPointF);
+
+        lastPointF = endPointF;
+        std::cout << "layer" << layer.size().width() << "\n";
+        std::cout << "dL" << drawLabel->size().width() << "\n";
+        std::cout << "iL" << imageLabel->size().width() << "\n";
+        std::cout << "dL2" << drawLabel->rect().width() << "\n";
+    }
+
+}
+
+void ScribbleArea::eraseLine(const QPointF &endPointF){
     QPainter painter(&layer);
     painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
                         Qt::RoundJoin));
 
-    int n=points.size();
-    for (int i=0; i<n; i++)
-    {
-        // "first" and "second" are used to access
-        // 1st and 2nd element of pair respectively
-        //std::cout << points[i].first.x() << " "
-        //     << points[i].first.y() << endl;
-    }
-    std::cout<<nowFactor<<"\n";
-    std::cout<<points.size()<<"\n";
-    if(lastP< pointsSize){
-        points.erase(points.begin()+lastP+1,points.begin()+points.size());
-        lastP=points.size();
-        pointsSize=lastP;
-    }
-    std::cout<<points.size()<<"\n";
-    std::cout<<lastP<<"\n";
+    int n = points.size();
 
-    painter.drawLine(lastPointF, endPointF);
-    points.push_back(std::make_pair(lastPointF/nowFactor,endPointF/nowFactor));
-    pointsSize++;
-    lastP++;
+    std::cout << nowFactor << "\n";
+    std::cout << points.size() << "\n";
+    std::cout << points.size() << "\n";
+    std::cout << lastP << "\n";
+    QPoint * lastPoint=new QPoint(lastPointF.toPoint());
+    QRect *eraseRect=new QRect(lastPointF.toPoint() , QSize(10,10));
+    for(int i=0;i<lastP;i++){
+        bool contains=false;
+        if(eraseRect->contains(points[i].first.x()*nowFactor,points[i].first.y()*nowFactor) || eraseRect->contains(points[i].second.x()*nowFactor,points[i].second.y()*nowFactor)){
+            points.push_back(points[i]);
+            points.erase(points.begin()+i);
+            lastP--;
+
+        }
+
+
+    }
+
     modified = true;
-    std::cout << painter.viewport().size().width()<<","<<painter.viewport().size().height()<<"\n";
-    int rad = (myPenWidth / 2) + 2;
-    //update(QRect(lastPoint, endPoint).normalized()
-     //              .adjusted(-rad, -rad, +rad, +rad));
-
-    painter.setPen(QPen(Qt::green, 20, Qt::SolidLine, Qt::RoundCap,
-                        Qt::RoundJoin));
-    //painter.drawPoint(endPointF);
-    painter.setPen(QPen(Qt::red, 20, Qt::SolidLine, Qt::RoundCap,
-                        Qt::RoundJoin));
-    //painter.drawPoint(lastPointF);
-
+    painter.eraseRect(layer.rect());
+    layer.fill(Qt::transparent);
+    drawLabel->setPixmap(layer);
+    for(int i=0;i<lastP;i++){
+        painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
+    }
     lastPointF = endPointF;
-    std::cout<<"layer"<<layer.size().width()<<"\n";
-    std::cout<<"dL"<<drawLabel->size().width()<<"\n";
-    std::cout<<"iL"<<imageLabel->size().width()<<"\n";
-    std::cout<<"dL2"<<drawLabel->rect().width()<<"\n";
-    load->setVisible(true);
+
 
 }
 void ScribbleArea::undo(){
@@ -347,9 +396,12 @@ void ScribbleArea::undo(){
     painter.eraseRect(layer.rect());
     layer.fill(Qt::transparent);
     drawLabel->setPixmap(layer);
+    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
     for(int i=0;i<lastP;i++){
         painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
     }
+    updateReferences();
 }
 void ScribbleArea::redo(){
     if(lastP+10<pointsSize){
@@ -363,9 +415,12 @@ void ScribbleArea::redo(){
     painter.eraseRect(layer.rect());
     layer.fill(Qt::transparent);
     drawLabel->setPixmap(layer);
+    painter.setPen(QPen(myPenColor, myPenWidth, Qt::SolidLine, Qt::RoundCap,
+                        Qt::RoundJoin));
     for(int i=0;i<lastP;i++){
         painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
     }
+    updateReferences();
 
 }
 void ScribbleArea::resizeImage(QImage *image, const QSize &newSize,const QPixmap *layer)

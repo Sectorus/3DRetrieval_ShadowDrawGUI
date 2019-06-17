@@ -31,6 +31,8 @@ private slots:
     void zoomOut();
     void undo();
     void redo();
+    void erase();
+    void paint();
 private:
     void createActions();
     void createMenus();
@@ -47,6 +49,8 @@ private:
     QMenu *helpMenu;
     QAction *openAct;
     QAction *openMultipleAct;
+    QAction *eraseAct;
+    QAction *paintAct;
 
     QList<QAction *> saveAsActs;
     QAction *exitAct;

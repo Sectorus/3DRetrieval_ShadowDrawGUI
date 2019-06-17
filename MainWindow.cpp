@@ -58,6 +58,10 @@ void MainWindow::save()
     saveFile(fileFormat);
 }
 
+void MainWindow::erase(){
+
+    scribbleArea->erase();
+}
 void MainWindow::penColor()
 {
     QColor newColor = QColorDialog::getColor(scribbleArea->penColor());
@@ -154,8 +158,17 @@ void MainWindow::createActions()
     redoAct=new QAction(tr("&Redo"),this);
     redoAct->setShortcut(tr("Ctrl+Y"));
     connect(redoAct,SIGNAL(triggered()),this,SLOT(redo()));
+
+    eraseAct=new QAction(tr("&Erase"),this);
+    connect(eraseAct,SIGNAL(triggered()),this,SLOT(erase()));
+
+    paintAct=new QAction(tr("&Paint"),this);
+    connect(paintAct,SIGNAL(triggered()),this,SLOT(paint()));
 }
 
+void MainWindow::paint(){
+    scribbleArea->paint();
+}
 void MainWindow::createMenus()
 {
     saveAsMenu = new QMenu(tr("&Save As"), this);
@@ -179,6 +192,8 @@ void MainWindow::createMenus()
     optionMenu->addAction(outZoom);
     optionMenu->addAction(undoAct);
     optionMenu->addAction(redoAct);
+    optionMenu->addAction(eraseAct);
+    optionMenu->addAction(paintAct);
 
     helpMenu = new QMenu(tr("&Help"), this);
     helpMenu->addAction(aboutAct);

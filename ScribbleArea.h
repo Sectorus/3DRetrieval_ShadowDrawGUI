@@ -24,7 +24,6 @@ public:
     bool saveImage(const QString &fileName, const char *fileFormat);
     void setPenColor(const QColor &newColor);
     void setPenWidth(int newWidth);
-
     bool isModified() const { return modified; }
     QColor penColor() const { return myPenColor; }
     int penWidth() const { return myPenWidth; }
@@ -32,6 +31,8 @@ public:
     void zoomOut();
     void undo();
     void redo();
+    void erase();
+    void paint();
 public slots:
     void clearImage();
 
@@ -44,12 +45,14 @@ protected:
 
 private:
     void drawLineTo(const QPointF &endPoint);
+    void eraseLine(const QPointF &endPoint);
     void resizeImage(QImage *image, const QSize &newSize,const QPixmap *layer);
     void resizePixmap(QPixmap *image, const QSize &newSize);
     void scaleImage(float factor);
     void setImage(const QImage &newImage);
     bool modified;
     bool scribbling;
+    bool erasing;
     int myPenWidth;
     QColor myPenColor;
     QImage image;
