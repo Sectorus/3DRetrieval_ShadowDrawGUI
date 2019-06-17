@@ -63,23 +63,23 @@ std::vector<int> Similarity::getSimilarReferences(const cv::Mat &drawing) {
 
     std::vector<int> indices;
 
-    if (similar_refs_.size() > 1 && similar_refs_.size() <= 100) {
-        for(int i = 0; i < similar_refs_.size(); i++)
+    if (ResourceManager::instance()->similar_refs_.size() > 1) {
+        for(int i = 0; i < ResourceManager::instance()->similar_refs_.size(); i++)
         {
-            Mat ref = ResourceManager::instance()->getResourceImages().at(similar_refs_.at(i));
+            Mat ref = ResourceManager::instance()->getResourceImages().at(ResourceManager::instance()->similar_refs_.at(i));
             Scalar s = getMSSIM(drawing, ref);
             double score = sum(s)[0] / 3;
-            if (score >= THRESHOLD) indices.push_back(i);
+            if (score >= ResourceManager::instance()->similarity_threshold_) indices.push_back(i);
         }
     } else {
         for (int i = 0; i < ResourceManager::instance()->getResourceImages().size(); i++) {
             Mat ref = ResourceManager::instance()->getResourceImages().at(i);
             Scalar s = getMSSIM(drawing, ref);
             double score = sum(s)[0] / 3;
-            if (score >= THRESHOLD) indices.push_back(i);
+            if (score >= ResourceManager::instance()->similarity_threshold_) indices.push_back(i);
         }
     }
-    similar_refs_ = indices;
+    ResourceManager::instance()->similar_refs_ = indices;
     return indices;
 }
 

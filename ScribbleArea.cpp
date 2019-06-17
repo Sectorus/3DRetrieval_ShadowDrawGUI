@@ -82,7 +82,6 @@ void ScribbleArea::setImage(const QImage &newImage){
 }
 
 void ScribbleArea::updateReferences(){
-    load->setVisible(true);
 
     //TODO clean up and move logic to other business layer
     Similarity sim;
@@ -115,27 +114,31 @@ void ScribbleArea::updateReferences(){
     //double r = sum(sim.getMSSIM(m, result))[0]/3;
     //std::cout << "Similarity " << r << std::endl;
     std::vector<int> refs = sim.getSimilarReferences(result);
-    std::cout << "Similar images: "  << refs.size() << std::endl;
-    cv::Mat blended = blend.blend(refs);
-    cv::Mat loadedI( loadedRef.height(), loadedRef.width(),
-                  CV_8UC4,
-                  const_cast<uchar*>(loadedRef.bits()),
-                  static_cast<size_t>(loadedRef.bytesPerLine()));
-    cv::Mat conv_loaded;
-    cv::cvtColor(loadedI, conv_loaded, cv::COLOR_RGBA2RGB);
-    cv::Mat finished;
-    cv::addWeighted(blended, 0.5, conv_loaded, 0.5, 0, finished);
+
+    if(refs.size() > 0)
+    {
+        std::cout << "Similar images: "  << refs.size() << std::endl;
+        cv::Mat blended = blend.blend(refs);
+        cv::Mat loadedI( loadedRef.height(), loadedRef.width(),
+                         CV_8UC4,
+                         const_cast<uchar*>(loadedRef.bits()),
+                         static_cast<size_t>(loadedRef.bytesPerLine()));
+        cv::Mat conv_loaded;
+        cv::cvtColor(loadedI, conv_loaded, cv::COLOR_RGBA2RGB);
+        cv::Mat finished;
+        cv::addWeighted(blended, 0.5, conv_loaded, 0.5, 0, finished);
 
 
-    QImage blendedImage( finished.data,
-                         finished.cols, finished.rows,
-                  static_cast<int>(finished.step),
-                  QImage::Format_RGB888 );
+        QImage blendedImage( finished.data,
+                             finished.cols, finished.rows,
+                             static_cast<int>(finished.step),
+                             QImage::Format_RGB888 );
 
-    imageLabel->setPixmap(QPixmap::fromImage(blendedImage));
-    imageLabel->show();
-    update();
-    load->setVisible(false);
+        imageLabel->setPixmap(QPixmap::fromImage(blendedImage));
+        imageLabel->show();
+        update();
+    }
+
     /*
     cv::Mat result = ResourceManager::instance()->getResourceImages().at(refs.at(0));
     for(int i = 1; i < refs.size(); i++){
@@ -152,6 +155,47 @@ void ScribbleArea::updateReferences(){
     imageLabel->show();
     update();
      */
+}
+
+void ScribbleArea::setThreshold() {
+    bool ok;
+    double val = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
+                                      tr("Similarity Threshold (Standard 0.90):"), ResourceManager::instance()->similarity_threshold_, 0.00, 1.00, 2, &ok);
+    if (ok)
+    {
+        ResourceManager::instance()->similarity_threshold_ = val;
+    }
+}
+
+void ScribbleArea::scratch() {
+    QImage loadedImage(QSize(300,300),QImage::Format_RGB888);
+    loadedImage.fill(Qt::white);
+    pointsSize=0;
+    QSize newSize = loadedImage.size().expandedTo(size());
+    QImage newImage(newSize, QImage::Format_RGB32);
+    newImage.fill(Qt::transparent);
+    image = loadedImage;
+    loadedRef = loadedImage;
+    setFixedWidth(image.width());
+    setFixedHeight(image.height());
+    imageLabel->resize(newSize);
+
+    imageLabel->setPixmap(QPixmap::fromImage(image));
+    imageLabel->show();
+
+    modified = false;
+
+    QPixmap l(newSize);
+    layer=l;
+    layer.fill(Qt::transparent);
+    drawLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    drawLabel->setScaledContents(true);
+    drawLabel->setPixmap(layer);
+    drawLabel->setParent(this);
+    drawLabel->show();
+    drawLabel->setStyleSheet("border: 2px solid blue");
+    imageLabel->setStyleSheet("border: 2px solid green");
+    update();
 }
 
 bool ScribbleArea::openMultipleImages()
@@ -263,7 +307,6 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && scribbling) {
         drawLineTo(event->pos());
-        load->setVisible(true);
         updateReferences();
         scribbling = false;
     }

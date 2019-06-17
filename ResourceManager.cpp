@@ -6,6 +6,7 @@
 
 ResourceManager::ResourceManager() {
     resources_lock_ = new std::mutex();
+    similarity_threshold_ = 0.90;
 }
 
 ResourceManager::~ResourceManager() {

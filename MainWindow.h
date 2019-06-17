@@ -21,6 +21,7 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
+    void scratch();
     void open();
     void openMultiple();
     void save();
@@ -31,6 +32,7 @@ private slots:
     void zoomOut();
     void undo();
     void redo();
+    void changeThreshold();
     void erase();
     void paint();
 private:
@@ -47,6 +49,8 @@ private:
     QMenu *fileMenu;
     QMenu *optionMenu;
     QMenu *helpMenu;
+
+    QAction *scratchAct;
     QAction *openAct;
     QAction *openMultipleAct;
     QAction *eraseAct;
@@ -63,6 +67,7 @@ private:
     QAction *outZoom;
     QAction *undoAct;
     QAction *redoAct;
+    QAction *thresholdAct;
 };
 
 

@@ -11,6 +11,7 @@
 #include <vector>
 #include <iostream>
 #include "Similarity.h"
+#include <future>
 
 class ScribbleArea : public QWidget
 {
@@ -24,6 +25,9 @@ public:
     bool saveImage(const QString &fileName, const char *fileFormat);
     void setPenColor(const QColor &newColor);
     void setPenWidth(int newWidth);
+    void setThreshold();
+    void scratch();
+
     bool isModified() const { return modified; }
     QColor penColor() const { return myPenColor; }
     int penWidth() const { return myPenWidth; }
