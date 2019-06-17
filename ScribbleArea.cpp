@@ -107,7 +107,7 @@ void ScribbleArea::updateReferences(){
     //std::cout << mat << std::endl;
     //cv::imwrite("out.png", mat);
     cv::Mat m = ResourceManager::instance()->getResourceImages().at(0);
-
+    cv::resize(result, result, cv::Size(m.rows, m.cols), 0, 0, cv::INTER_CUBIC); //Resize to 300x300
 
     //double r = sum(sim.getMSSIM(m, result))[0]/3;
     //std::cout << "Similarity " << r << std::endl;

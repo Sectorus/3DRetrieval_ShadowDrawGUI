@@ -54,7 +54,8 @@ int main(int argc, char **argv) {
     MainWindow window;
     window.show();
 
-    //Quick test for similarity class
+    /*
+     * //Quick test for similarity class
     cv::Mat img1 = cv::imread("img/cva_athens_5_1_1-e.jpg");
     cv::Mat img2 = cv::imread("img/cva_athens_5_1_2-e.jpg");
 
@@ -66,7 +67,7 @@ int main(int argc, char **argv) {
     double similarity_score2 = sum(s2)[0]/3;
 
     std::cout << "Similarity score of same image: " << similarity_score1*100 << "%" << std::endl;
-    std::cout << "Similarity score of different images: " << similarity_score2*100 << "%" << std::endl;
+    std::cout << "Similarity score of different images: " << similarity_score2*100 << "%" << std::endl;*/
 
     return app.exec();
 }

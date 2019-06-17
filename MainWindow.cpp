@@ -39,7 +39,7 @@ void MainWindow::open()
 {
     if (maybeSave()) {
         QString fileName = QFileDialog::getOpenFileName(this,
-                                                        tr("Open File"), QDir::currentPath());
+                                                        tr("Open File"), QDir::currentPath()+"/sketch_ref/");
         if (!fileName.isEmpty())
             scribbleArea->openImage(fileName);
     }
