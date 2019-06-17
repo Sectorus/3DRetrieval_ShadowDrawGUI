@@ -33,6 +33,8 @@ private slots:
     void undo();
     void redo();
     void changeThreshold();
+    void erase();
+    void paint();
 private:
     void createActions();
     void createMenus();
@@ -51,6 +53,8 @@ private:
     QAction *scratchAct;
     QAction *openAct;
     QAction *openMultipleAct;
+    QAction *eraseAct;
+    QAction *paintAct;
 
     QList<QAction *> saveAsActs;
     QAction *exitAct;
