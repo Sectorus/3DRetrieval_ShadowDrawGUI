@@ -13,6 +13,7 @@
 
 class Blending{
 public:
-    cv::Mat blend();
+    cv::Mat blend(std::vector<int> refs);
+    cv::Mat alphaBlend(cv::Mat img1, double weight1, cv::Mat img2, double weight2);
 private:
 };

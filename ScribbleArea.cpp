@@ -17,7 +17,7 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     setAttribute(Qt::WA_StaticContents);
     modified = false;
     scribbling = false;
-    myPenWidth = 1;
+    myPenWidth = 3;
     myPenColor = Qt::black;
     imageLabel->setBackgroundRole(QPalette::Base);
     imageLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
@@ -48,6 +48,7 @@ bool ScribbleArea::openImage(const QString &fileName)
 
     newImage.fill(Qt::transparent);
     image = loadedImage;
+    loadedRef = loadedImage;
     setFixedWidth(image.width());
     setFixedHeight(image.height());
     imageLabel->resize(newSize);
@@ -78,17 +79,91 @@ void ScribbleArea::setImage(const QImage &newImage){
     update();
 
 }
+
+void ScribbleArea::updateReferences(){
+
+    //TODO clean up and move logic to other business layer
+    Similarity sim;
+    Blending blend;
+    QPainter painter(&layer);
+
+    QImage img = drawLabel->pixmap()->toImage();
+    cv::Mat  mat( img.height(), img.width(),
+                  CV_8UC4,
+                  const_cast<uchar*>(img.bits()),
+                  static_cast<size_t>(img.bytesPerLine()));
+
+    std::vector<cv::Mat> pngChannels(4);
+    cv::split(mat, pngChannels);
+    pngChannels[0].setTo(cv::Scalar(255), pngChannels[3]==0);
+    pngChannels[1].setTo(cv::Scalar(255), pngChannels[3]==0);
+    pngChannels[2].setTo(cv::Scalar(255), pngChannels[3]==0);
+
+    cv::Mat mat_without_alpha, result;
+    cv::merge(pngChannels, mat_without_alpha);
+    cv::cvtColor(mat_without_alpha, result, cv::COLOR_RGBA2RGB);
+
+    //mat = cv::Scalar::all(123);
+    //cv::imshow("Update", result);
+    //std::cout << mat << std::endl;
+    //cv::imwrite("out.png", mat);
+    cv::Mat m = ResourceManager::instance()->getResourceImages().at(0);
+
+
+    //double r = sum(sim.getMSSIM(m, result))[0]/3;
+    //std::cout << "Similarity " << r << std::endl;
+    std::vector<int> refs = sim.getSimilarReferences(result);
+    std::cout << "Similar images: "  << refs.size() << std::endl;
+    cv::Mat blended = blend.blend(refs);
+    cv::Mat loadedI( loadedRef.height(), loadedRef.width(),
+                  CV_8UC4,
+                  const_cast<uchar*>(loadedRef.bits()),
+                  static_cast<size_t>(loadedRef.bytesPerLine()));
+    cv::Mat conv_loaded;
+    cv::cvtColor(loadedI, conv_loaded, cv::COLOR_RGBA2RGB);
+    cv::Mat finished;
+    cv::addWeighted(blended, 0.5, conv_loaded, 0.5, 0, finished);
+
+
+    QImage blendedImage( finished.data,
+                         finished.cols, finished.rows,
+                  static_cast<int>(finished.step),
+                  QImage::Format_RGB888 );
+
+    imageLabel->setPixmap(QPixmap::fromImage(blendedImage));
+    imageLabel->show();
+    update();
+
+    /*
+    cv::Mat result = ResourceManager::instance()->getResourceImages().at(refs.at(0));
+    for(int i = 1; i < refs.size(); i++){
+        cv::Mat mat = ResourceManager::instance()->getResourceImages().at(refs.at(i));
+        result = blend.alphaBlend(result, 0.5, mat , 0.5);
+    }
+
+    QImage loadedImage = QImage((uchar*) result.data, result.cols, result.rows, result.step, QImage::Format_RGB888);
+    QSize newSize = loadedImage.size().expandedTo(size());
+    resizeImage(&loadedImage, newSize, &layer);
+    image = loadedImage;
+    modified = false;
+    imageLabel->setPixmap(QPixmap::fromImage(image));
+    imageLabel->show();
+    update();
+     */
+}
+
 bool ScribbleArea::openMultipleImages()
 {
+    /*
     Blending b;
-    cv::Mat img = b.blend();
+    //cv::Mat img = b.blend();
 
     QImage loadedImage = QImage((uchar*) img.data, img.cols, img.rows, img.step, QImage::Format_RGB888);
     QSize newSize = loadedImage.size().expandedTo(size());
     resizeImage(&loadedImage, newSize, &layer);
     image = loadedImage;
     modified = false;
-    update();
+    update();*/
     return true;
 }
 
@@ -184,6 +259,7 @@ void ScribbleArea::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton && scribbling) {
         drawLineTo(event->pos());
+        updateReferences();
         scribbling = false;
     }
 }
