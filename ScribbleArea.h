@@ -57,6 +57,7 @@ private:
     QLabel *imageLabel;
     QLabel *drawLabel;
     std::vector<std::pair<QPointF,QPointF>> points;
+    QLabel *load=new QLabel;
     int pointsSize;
     int lastP;
 };

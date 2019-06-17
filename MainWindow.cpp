@@ -86,7 +86,7 @@ void MainWindow::zoomOut(){
 void MainWindow::about()
 {
     QMessageBox::about(this, tr("About Scribble"),
-                       tr("<p>The <b>Scribble</b> example shows how to use QMainWindow as the "
+                       tr("T "
                           "base widget for an application, and how to reimplement some of "
                           "QWidget's event handlers to receive the events generated for "
                           "the application's widgets:</p><p> We reimplement the mouse event "

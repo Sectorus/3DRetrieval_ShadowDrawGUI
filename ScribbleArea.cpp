@@ -7,7 +7,8 @@
 ScribbleArea::ScribbleArea(QWidget *parent)
         : QWidget(parent),
          imageLabel(new QLabel),
-         drawLabel(new QLabel)
+         drawLabel(new QLabel),
+         load(new QLabel)
 {
     setStyleSheet("border: 1px solid red");
     pointsSize=0;
@@ -23,6 +24,13 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     imageLabel->setScaledContents(true);
     imageLabel->setPixmap(QPixmap::fromImage(image));
     imageLabel->setParent(this);
+    load->setParent(this);
+    QMovie *movie = new QMovie("loader.gif");
+    load->setMovie(movie);
+    load->setVisible(false);
+    load->setAttribute( Qt::WA_TranslucentBackground, true );
+    load->setAlignment(Qt::AlignCenter);
+    movie->start();
     resize(480,480);
     setStyleSheet("border: 1px solid red");
 
@@ -248,6 +256,7 @@ void ScribbleArea::drawLineTo(const QPointF &endPointF)
     std::cout<<"dL"<<drawLabel->size().width()<<"\n";
     std::cout<<"iL"<<imageLabel->size().width()<<"\n";
     std::cout<<"dL2"<<drawLabel->rect().width()<<"\n";
+    load->setVisible(true);
 
 }
 void ScribbleArea::undo(){
