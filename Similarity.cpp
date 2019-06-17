@@ -6,19 +6,19 @@
 
 using namespace cv;
 
-Scalar Similarity::getMSSIM( const Mat& i1, const Mat& i2)
-{
+
+Scalar Similarity::getMSSIM(const Mat &i1, const Mat &i2) {
     const double C1 = 6.5025, C2 = 58.5225;
     /***************************** INITS **********************************/
-    int d     = CV_32F;
+    int d = CV_32F;
 
     Mat I1, I2;
     i1.convertTo(I1, d);           // cannot calculate on one byte large values
     i2.convertTo(I2, d);
 
-    Mat I2_2   = I2.mul(I2);        // I2^2
-    Mat I1_2   = I1.mul(I1);        // I1^2
-    Mat I1_I2  = I1.mul(I2);        // I1 * I2
+    Mat I2_2 = I2.mul(I2);        // I2^2
+    Mat I1_2 = I1.mul(I1);        // I1^2
+    Mat I1_I2 = I1.mul(I2);        // I1 * I2
 
     /*************************** END INITS **********************************/
 
@@ -26,9 +26,9 @@ Scalar Similarity::getMSSIM( const Mat& i1, const Mat& i2)
     GaussianBlur(I1, mu1, Size(11, 11), 1.5);
     GaussianBlur(I2, mu2, Size(11, 11), 1.5);
 
-    Mat mu1_2   =   mu1.mul(mu1);
-    Mat mu2_2   =   mu2.mul(mu2);
-    Mat mu1_mu2 =   mu1.mul(mu2);
+    Mat mu1_2 = mu1.mul(mu1);
+    Mat mu2_2 = mu2.mul(mu2);
+    Mat mu1_mu2 = mu1.mul(mu2);
 
     Mat sigma1_2, sigma2_2, sigma12;
 
@@ -55,6 +55,32 @@ Scalar Similarity::getMSSIM( const Mat& i1, const Mat& i2)
     Mat ssim_map;
     divide(t3, t1, ssim_map);      // ssim_map =  t3./t1;
 
-    Scalar mssim = mean( ssim_map ); // mssim = average of ssim map
+    Scalar mssim = mean(ssim_map); // mssim = average of ssim map
     return mssim;
 }
+
+std::vector<int> Similarity::getSimilarReferences(const cv::Mat &drawing) {
+
+    std::vector<int> indices;
+
+    if (similar_refs_.size() > 1 && similar_refs_.size() <= 100) {
+        for(int i = 0; i < similar_refs_.size(); i++)
+        {
+            Mat ref = ResourceManager::instance()->getResourceImages().at(similar_refs_.at(i));
+            Scalar s = getMSSIM(drawing, ref);
+            double score = sum(s)[0] / 3;
+            if (score >= THRESHOLD) indices.push_back(i);
+        }
+    } else {
+        for (int i = 0; i < ResourceManager::instance()->getResourceImages().size(); i++) {
+            Mat ref = ResourceManager::instance()->getResourceImages().at(i);
+            Scalar s = getMSSIM(drawing, ref);
+            double score = sum(s)[0] / 3;
+            if (score >= THRESHOLD) indices.push_back(i);
+        }
+    }
+    similar_refs_ = indices;
+    return indices;
+}
+
+

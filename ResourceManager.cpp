@@ -37,7 +37,9 @@ void ResourceManager::loadResourcesFromDirectory(std::string path) {
     for(int i = 2; i < stringvec.size(); i++)
     {
         auto file = stringvec.at(i);
-        resource_images_.push_back(cv::imread(path+"/"+file));
+        cv::Mat m = cv::imread(path+"/"+file);
+       // std::cout <<"Resource "<< m.rows << "," << m.cols << std::endl;
+        resource_images_.push_back(m);
     }
 }
 

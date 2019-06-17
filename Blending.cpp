@@ -4,7 +4,21 @@
 
 #include "Blending.h"
 
-cv::Mat Blending::blend() {
+cv::Mat Blending::alphaBlend(cv::Mat img1, double weight1, cv::Mat img2, double weight2)
+{
+    auto first = img1;
+    auto second = img2;
+
+    cv::Mat img(first.rows, first.cols, first.type(), cv::Scalar(0, 0, 0));
+
+    for(cv::Mat mat : ResourceManager::instance()->getResourceImages())
+    {
+        cv::addWeighted(img, weight1, second, weight2, 0, img);
+    }
+    return img;
+}
+
+cv::Mat Blending::blend(std::vector<int> refs) {
     /*
     src1 = cv::imread("img/test.jpg");
     src2 = cv::imread("img/test2.jpg");
@@ -52,12 +66,14 @@ cv::Mat Blending::blend() {
         cv::addWeighted(img, 0.5, mat, 1.0f/ResourceManager::instance()->getResourceImages().size(), 0, img);
     }*/
 
-    auto first = ResourceManager::instance()->getResourceImages().at(0);
+    auto first = ResourceManager::instance()->getResourceImages().at(refs.at(0));
     cv::Mat img(first.rows, first.cols, first.type(), cv::Scalar(255, 255, 255));
 
-    for(cv::Mat mat : ResourceManager::instance()->getResourceImages())
+    for(int i = 1; i < refs.size(); i++)
     {
+        cv::Mat mat = ResourceManager::instance()->getResourceImages().at(refs.at(i));
         cv::bitwise_and(mat, img, img);
+
     }
 
     //Make merged sketches lighter

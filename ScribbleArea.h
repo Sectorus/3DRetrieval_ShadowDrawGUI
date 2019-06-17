@@ -10,6 +10,7 @@
 #include "ResourceManager.h"
 #include <vector>
 #include <iostream>
+#include "Similarity.h"
 
 class ScribbleArea : public QWidget
 {
@@ -51,6 +52,7 @@ private:
     int myPenWidth;
     QColor myPenColor;
     QImage image;
+    QImage loadedRef;
     QPointF lastPointF;
     QPixmap layer;
     QLabel *imageLabel;
@@ -58,6 +60,7 @@ private:
     std::vector<std::pair<QPointF,QPointF>> points;
     int pointsSize;
     int lastP;
+    void updateReferences();
 };
 
 
