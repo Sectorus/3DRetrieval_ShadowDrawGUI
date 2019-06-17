@@ -69,14 +69,14 @@ std::vector<int> Similarity::getSimilarReferences(const cv::Mat &drawing) {
             Mat ref = ResourceManager::instance()->getResourceImages().at(ResourceManager::instance()->similar_refs_.at(i));
             Scalar s = getMSSIM(drawing, ref);
             double score = sum(s)[0] / 3;
-            if (score >= THRESHOLD) indices.push_back(i);
+            if (score >= ResourceManager::instance()->similarity_threshold_) indices.push_back(i);
         }
     } else {
         for (int i = 0; i < ResourceManager::instance()->getResourceImages().size(); i++) {
             Mat ref = ResourceManager::instance()->getResourceImages().at(i);
             Scalar s = getMSSIM(drawing, ref);
             double score = sum(s)[0] / 3;
-            if (score >= THRESHOLD) indices.push_back(i);
+            if (score >= ResourceManager::instance()->similarity_threshold_) indices.push_back(i);
         }
     }
     ResourceManager::instance()->similar_refs_ = indices;

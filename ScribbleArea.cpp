@@ -33,7 +33,6 @@ ScribbleArea::ScribbleArea(QWidget *parent)
     movie->start();
     resize(480,480);
     setStyleSheet("border: 1px solid red");
-
 }
 
 bool ScribbleArea::openImage(const QString &fileName)
@@ -154,6 +153,47 @@ void ScribbleArea::updateReferences(){
     imageLabel->show();
     update();
      */
+}
+
+void ScribbleArea::setThreshold() {
+    bool ok;
+    double val = QInputDialog::getDouble(this, tr("QInputDialog::getDouble()"),
+                                      tr("Similarity Threshold (Standard 0.90):"), ResourceManager::instance()->similarity_threshold_, 0.00, 1.00, 2, &ok);
+    if (ok)
+    {
+        ResourceManager::instance()->similarity_threshold_ = val;
+    }
+}
+
+void ScribbleArea::scratch() {
+    QImage loadedImage(QSize(300,300),QImage::Format_RGB888);
+    loadedImage.fill(Qt::white);
+    pointsSize=0;
+    QSize newSize = loadedImage.size().expandedTo(size());
+    QImage newImage(newSize, QImage::Format_RGB32);
+    newImage.fill(Qt::transparent);
+    image = loadedImage;
+    loadedRef = loadedImage;
+    setFixedWidth(image.width());
+    setFixedHeight(image.height());
+    imageLabel->resize(newSize);
+
+    imageLabel->setPixmap(QPixmap::fromImage(image));
+    imageLabel->show();
+
+    modified = false;
+
+    QPixmap l(newSize);
+    layer=l;
+    layer.fill(Qt::transparent);
+    drawLabel->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+    drawLabel->setScaledContents(true);
+    drawLabel->setPixmap(layer);
+    drawLabel->setParent(this);
+    drawLabel->show();
+    drawLabel->setStyleSheet("border: 2px solid blue");
+    imageLabel->setStyleSheet("border: 2px solid green");
+    update();
 }
 
 bool ScribbleArea::openMultipleImages()

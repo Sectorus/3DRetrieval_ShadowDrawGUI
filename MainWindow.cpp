@@ -21,7 +21,7 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
    // printf("jeje");
-    setWindowTitle(tr("Scribble"));
+    setWindowTitle(tr("ShadowDraw"));
     resize(500, 500);
     // printf("jejeje");
 }
@@ -113,6 +113,8 @@ void MainWindow::createActions()
             connect(action, SIGNAL(triggered()), this, SLOT(save()));
             saveAsActs.append(action);
         }
+    scratchAct = new QAction(tr("&New from scratch"), this);
+    connect(scratchAct, SIGNAL(triggered()), this, SLOT(scratch()));
 
     openMultipleAct = new QAction(tr("&Open multiple..."), this);
     connect(openMultipleAct, SIGNAL(triggered()), this, SLOT(openMultiple()));
@@ -154,6 +156,10 @@ void MainWindow::createActions()
     redoAct=new QAction(tr("&Redo"),this);
     redoAct->setShortcut(tr("Ctrl+Y"));
     connect(redoAct,SIGNAL(triggered()),this,SLOT(redo()));
+
+    thresholdAct=new QAction(tr("&Change Threshold"),this);
+    connect(thresholdAct,SIGNAL(triggered()),this,SLOT(changeThreshold()));
+
 }
 
 void MainWindow::createMenus()
@@ -163,8 +169,9 @@ void MainWindow::createMenus()
             saveAsMenu->addAction(action);
 
     fileMenu = new QMenu(tr("&File"), this);
+    fileMenu->addAction(scratchAct);
     fileMenu->addAction(openAct);
-    fileMenu->addAction(openMultipleAct);
+    //fileMenu->addAction(openMultipleAct);
 
     fileMenu->addMenu(saveAsMenu);
     fileMenu->addSeparator();
@@ -179,6 +186,9 @@ void MainWindow::createMenus()
     optionMenu->addAction(outZoom);
     optionMenu->addAction(undoAct);
     optionMenu->addAction(redoAct);
+    optionMenu->addSeparator();
+    optionMenu->addAction(thresholdAct);
+
 
     helpMenu = new QMenu(tr("&Help"), this);
     helpMenu->addAction(aboutAct);
@@ -194,6 +204,14 @@ void MainWindow::undo(){
 
 void MainWindow::redo(){
     scribbleArea->redo();
+}
+
+void MainWindow::changeThreshold(){
+    scribbleArea->setThreshold();
+}
+
+void MainWindow::scratch(){
+    scribbleArea->scratch();
 }
 
 bool MainWindow::maybeSave()

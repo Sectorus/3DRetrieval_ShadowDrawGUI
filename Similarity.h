@@ -10,7 +10,6 @@
 #include <vector>
 #include "ResourceManager.h"
 
-#define THRESHOLD 0.90
 
 class Similarity {
 public:

@@ -25,6 +25,8 @@ public:
     bool saveImage(const QString &fileName, const char *fileFormat);
     void setPenColor(const QColor &newColor);
     void setPenWidth(int newWidth);
+    void setThreshold();
+    void scratch();
 
     bool isModified() const { return modified; }
     QColor penColor() const { return myPenColor; }

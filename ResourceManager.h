@@ -20,7 +20,7 @@ public:
     void loadResourcesFromDirectory(std::string path);
     std::mutex *getMutex();
     std::vector<int> similar_refs_;
-
+    double similarity_threshold_;
 private:
     static ResourceManager *instance_;
     ResourceManager();
