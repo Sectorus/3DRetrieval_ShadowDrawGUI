@@ -151,7 +151,7 @@ void MainWindow::createActions()
     undoAct->setShortcut(tr("Ctrl+Z"));
     connect(undoAct,SIGNAL(triggered()),this,SLOT(undo()));
     
-    redoAct=new QAction(tr("&redo"),this);
+    redoAct=new QAction(tr("&Redo"),this);
     redoAct->setShortcut(tr("Ctrl+Y"));
     connect(redoAct,SIGNAL(triggered()),this,SLOT(redo()));
 }

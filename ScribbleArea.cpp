@@ -87,7 +87,7 @@ bool ScribbleArea::openMultipleImages()
 bool ScribbleArea::saveImage(const QString &fileName, const char *fileFormat)
 {
     QImage visibleImage = image;
-    visibleImage=layer.toImage();
+    visibleImage=drawLabel->pixmap()->toImage();
     resizeImage(&visibleImage, size(),&layer);
 
     if (visibleImage.save(fileName, fileFormat)) {
@@ -217,7 +217,14 @@ void ScribbleArea::drawLineTo(const QPointF &endPointF)
         //     << points[i].first.y() << endl;
     }
     std::cout<<nowFactor<<"\n";
-
+    std::cout<<points.size()<<"\n";
+    if(lastP< pointsSize){
+        points.erase(points.begin()+lastP+1,points.begin()+points.size());
+        lastP=points.size();
+        pointsSize=lastP;
+    }
+    std::cout<<points.size()<<"\n";
+    std::cout<<lastP<<"\n";
 
     painter.drawLine(lastPointF, endPointF);
     points.push_back(std::make_pair(lastPointF/nowFactor,endPointF/nowFactor));

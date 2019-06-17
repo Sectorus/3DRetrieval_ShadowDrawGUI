@@ -49,15 +49,14 @@ int main(int argc, char **argv) {
         cv::Mat contour = ed.detectEdges( imread(in_path+"/"+file) );
         imwrite( out_path+"/"+file, contour );
     }
-
     ResourceManager::instance()->loadResourcesFromDirectory(out_path);
     QApplication app(argc, argv);
     MainWindow window;
     window.show();
 
     //Quick test for similarity class
-    cv::Mat img1 = cv::imread("sketch_ref/cva_athens_5_1_1-e.jpg");
-    cv::Mat img2 = cv::imread("sketch_ref/cva_athens_5_1_2-e.jpg");
+    cv::Mat img1 = cv::imread("img/cva_athens_5_1_1-e.jpg");
+    cv::Mat img2 = cv::imread("img/cva_athens_5_1_2-e.jpg");
 
     Similarity sim;
     cv::Scalar s1 = sim.getMSSIM(img1, img1);
