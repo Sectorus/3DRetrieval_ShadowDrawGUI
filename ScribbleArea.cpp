@@ -113,26 +113,30 @@ void ScribbleArea::updateReferences(){
     //double r = sum(sim.getMSSIM(m, result))[0]/3;
     //std::cout << "Similarity " << r << std::endl;
     std::vector<int> refs = sim.getSimilarReferences(result);
-    std::cout << "Similar images: "  << refs.size() << std::endl;
-    cv::Mat blended = blend.blend(refs);
-    cv::Mat loadedI( loadedRef.height(), loadedRef.width(),
-                  CV_8UC4,
-                  const_cast<uchar*>(loadedRef.bits()),
-                  static_cast<size_t>(loadedRef.bytesPerLine()));
-    cv::Mat conv_loaded;
-    cv::cvtColor(loadedI, conv_loaded, cv::COLOR_RGBA2RGB);
-    cv::Mat finished;
-    cv::addWeighted(blended, 0.5, conv_loaded, 0.5, 0, finished);
+
+    if(refs.size() > 0)
+    {
+        std::cout << "Similar images: "  << refs.size() << std::endl;
+        cv::Mat blended = blend.blend(refs);
+        cv::Mat loadedI( loadedRef.height(), loadedRef.width(),
+                         CV_8UC4,
+                         const_cast<uchar*>(loadedRef.bits()),
+                         static_cast<size_t>(loadedRef.bytesPerLine()));
+        cv::Mat conv_loaded;
+        cv::cvtColor(loadedI, conv_loaded, cv::COLOR_RGBA2RGB);
+        cv::Mat finished;
+        cv::addWeighted(blended, 0.5, conv_loaded, 0.5, 0, finished);
 
 
-    QImage blendedImage( finished.data,
-                         finished.cols, finished.rows,
-                  static_cast<int>(finished.step),
-                  QImage::Format_RGB888 );
+        QImage blendedImage( finished.data,
+                             finished.cols, finished.rows,
+                             static_cast<int>(finished.step),
+                             QImage::Format_RGB888 );
 
-    imageLabel->setPixmap(QPixmap::fromImage(blendedImage));
-    imageLabel->show();
-    update();
+        imageLabel->setPixmap(QPixmap::fromImage(blendedImage));
+        imageLabel->show();
+        update();
+    }
 
     /*
     cv::Mat result = ResourceManager::instance()->getResourceImages().at(refs.at(0));

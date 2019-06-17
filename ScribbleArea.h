@@ -11,6 +11,7 @@
 #include <vector>
 #include <iostream>
 #include "Similarity.h"
+#include <future>
 
 class ScribbleArea : public QWidget
 {
