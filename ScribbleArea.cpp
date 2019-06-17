@@ -412,8 +412,6 @@ void ScribbleArea::eraseLine(const QPointF &endPointF){
             lastP--;
 
         }
-
-
     }
 
     modified = true;
@@ -424,8 +422,6 @@ void ScribbleArea::eraseLine(const QPointF &endPointF){
         painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
     }
     lastPointF = endPointF;
-
-
 }
 void ScribbleArea::undo(){
     std::cout<<lastP<<"\n";
@@ -444,6 +440,7 @@ void ScribbleArea::undo(){
     for(int i=0;i<lastP;i++){
         painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
     }
+    ResourceManager::instance()->similar_refs_.clear();
     updateReferences();
 }
 void ScribbleArea::redo(){
@@ -463,6 +460,7 @@ void ScribbleArea::redo(){
     for(int i=0;i<lastP;i++){
         painter.drawLine(points[i].first*nowFactor,points[i].second*nowFactor);
     }
+    ResourceManager::instance()->similar_refs_.clear();
     updateReferences();
 
 }
