@@ -13,12 +13,15 @@
 #include <stdio.h>
 
 
-class EdgeDetector{
+class EdgeDetector {
 public:
     cv::Mat detectEdges(cv::Mat img);
+
 private:
-    cv::Mat src; cv::Mat src_gray;
+    cv::Mat src;
+    cv::Mat src_gray;
     int thresh = 300;
+
     cv::Mat CannyThreshold();
 };
 

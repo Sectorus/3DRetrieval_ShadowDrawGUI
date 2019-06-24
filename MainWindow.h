@@ -10,9 +10,8 @@
 
 class ScribbleArea;
 
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+class MainWindow : public QMainWindow {
+Q_OBJECT
 
 public:
     MainWindow();
@@ -21,24 +20,40 @@ protected:
     void closeEvent(QCloseEvent *event) override;
 
 private slots:
+
     void scratch();
+
     void open();
-    void openMultiple();
+
     void save();
+
     void penColor();
+
     void penWidth();
+
     void about();
+
     void zoomIn();
+
     void zoomOut();
+
     void undo();
+
     void redo();
+
     void changeThreshold();
+
     void erase();
+
     void paint();
+
 private:
     void createActions();
+
     void createMenus();
+
     bool maybeSave();
+
     bool saveFile(const QByteArray &fileFormat);
 
     ScribbleArea *scribbleArea;
@@ -52,7 +67,6 @@ private:
 
     QAction *scratchAct;
     QAction *openAct;
-    QAction *openMultipleAct;
     QAction *eraseAct;
     QAction *paintAct;
 

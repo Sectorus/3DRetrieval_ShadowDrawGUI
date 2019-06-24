@@ -4,6 +4,8 @@
 
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#include "opencv2/core/utils/filesystem.hpp"
+
 
 #include <QtWidgets>
 #include <QtGui>
@@ -34,8 +36,12 @@ int main(int argc, char **argv) {
 
     std::vector<std::string> stringvec;
 
-    DIR* dirp = opendir(in_path.c_str());
-    struct dirent * dp;
+    cv::utils::fs::createDirectory(in_path);
+    cv::utils::fs::createDirectory(out_path);
+
+
+    DIR *dirp = opendir(in_path.c_str());
+    struct dirent *dp;
     while ((dp = readdir(dirp)) != NULL) {
         stringvec.push_back(dp->d_name);
     }
@@ -43,31 +49,24 @@ int main(int argc, char **argv) {
 
     EdgeDetector ed;
 
-    for(unsigned int i = 2; i < stringvec.size(); i++)
-    {
+    for (unsigned int i = 2; i < stringvec.size(); i++) {
         auto file = stringvec.at(i);
-        cv::Mat contour = ed.detectEdges( imread(in_path+"/"+file) );
-        imwrite( out_path+"/"+file, contour );
+        cv::Mat contour = ed.detectEdges(imread(in_path + "/" + file));
+        imwrite(out_path + "/" + file, contour);
     }
     ResourceManager::instance()->loadResourcesFromDirectory(out_path);
+
     QApplication app(argc, argv);
+
+    if(ResourceManager::instance()->getResourceImages().size() == 0){
+        QMessageBox msgBox;
+        msgBox.setText("No references available. Please store some reference images into your 'img' directory. Exiting now...");
+        msgBox.exec();
+        exit(0);
+    }
+
     MainWindow window;
     window.show();
-
-    /*
-     * //Quick test for similarity class
-    cv::Mat img1 = cv::imread("img/cva_athens_5_1_1-e.jpg");
-    cv::Mat img2 = cv::imread("img/cva_athens_5_1_2-e.jpg");
-
-    Similarity sim;
-    cv::Scalar s1 = sim.getMSSIM(img1, img1);
-    cv::Scalar s2 = sim.getMSSIM(img1, img2);
-
-    double similarity_score1 = sum(s1)[0]/3;
-    double similarity_score2 = sum(s2)[0]/3;
-
-    std::cout << "Similarity score of same image: " << similarity_score1*100 << "%" << std::endl;
-    std::cout << "Similarity score of different images: " << similarity_score2*100 << "%" << std::endl;*/
 
     return app.exec();
 }

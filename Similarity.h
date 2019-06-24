@@ -13,8 +13,11 @@
 
 class Similarity {
 public:
-        cv::Scalar getMSSIM( const cv::Mat& i1, const cv::Mat& i2);
-        std::vector<int> getSimilarReferences(const cv::Mat& drawing);
+    cv::Scalar getMSSIM(const cv::Mat &i1, const cv::Mat &i2);
+
+    std::vector<int> getSimilarReferences(const cv::Mat &drawing);
+
 private:
 };
+
 #endif //SHADOWDRAWGUI_SIMILARITY_H

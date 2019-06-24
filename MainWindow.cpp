@@ -6,8 +6,7 @@
 #include <QtWidgets>
 #include "ScribbleArea.h"
 
-MainWindow::MainWindow()
-{
+MainWindow::MainWindow() {
     scribbleArea = new ScribbleArea;
     QScrollArea *qScrollArea = new QScrollArea;
     qScrollArea->setWidget(scribbleArea);
@@ -17,17 +16,13 @@ MainWindow::MainWindow()
     qScrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     qScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     setCentralWidget(qScrollArea);
-   // printf("jeje");
     createActions();
     createMenus();
-   // printf("jeje");
     setWindowTitle(tr("ShadowDraw"));
     resize(500, 500);
-    // printf("jejeje");
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
-{
+void MainWindow::closeEvent(QCloseEvent *event) {
     if (maybeSave()) {
         event->accept();
     } else {
@@ -35,42 +30,34 @@ void MainWindow::closeEvent(QCloseEvent *event)
     }
 }
 
-void MainWindow::open()
-{
+void MainWindow::open() {
     if (maybeSave()) {
         QString fileName = QFileDialog::getOpenFileName(this,
-                                                        tr("Open File"), QDir::currentPath()+"/sketch_ref/");
+                                                        tr("Open File"), QDir::currentPath() + "/sketch_ref/");
         if (!fileName.isEmpty())
             scribbleArea->openImage(fileName);
     }
 }
 
-void MainWindow::openMultiple() {
-    if (maybeSave()) {
-            scribbleArea->openMultipleImages();
-    }
-}
 
-void MainWindow::save()
-{
+void MainWindow::save() {
     QAction *action = qobject_cast<QAction *>(sender());
     QByteArray fileFormat = action->data().toByteArray();
     saveFile(fileFormat);
 }
 
-void MainWindow::erase(){
+void MainWindow::erase() {
 
     scribbleArea->erase();
 }
-void MainWindow::penColor()
-{
+
+void MainWindow::penColor() {
     QColor newColor = QColorDialog::getColor(scribbleArea->penColor());
     if (newColor.isValid())
         scribbleArea->setPenColor(newColor);
 }
 
-void MainWindow::penWidth()
-{
+void MainWindow::penWidth() {
     bool ok;
     int newWidth = QInputDialog::getInt(this, tr("Scribble"),
                                         tr("Select pen width:"),
@@ -79,16 +66,17 @@ void MainWindow::penWidth()
     if (ok)
         scribbleArea->setPenWidth(newWidth);
 }
-void MainWindow::zoomIn(){
+
+void MainWindow::zoomIn() {
     scribbleArea->zoomIn();
 }
-void MainWindow::zoomOut(){
+
+void MainWindow::zoomOut() {
     scribbleArea->zoomOut();
 }
 
 
-void MainWindow::about()
-{
+void MainWindow::about() {
     QMessageBox::about(this, tr("About Scribble"),
                        tr("T "
                           "base widget for an application, and how to reimplement some of "
@@ -103,8 +91,7 @@ void MainWindow::about()
                           "to repaint widgets.</p>"));
 }
 
-void MainWindow::createActions()
-{
+void MainWindow::createActions() {
     openAct = new QAction(tr("&Open..."), this);
     openAct->setShortcuts(QKeySequence::Open);
     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
@@ -119,10 +106,6 @@ void MainWindow::createActions()
         }
     scratchAct = new QAction(tr("&New from scratch"), this);
     connect(scratchAct, SIGNAL(triggered()), this, SLOT(scratch()));
-
-    openMultipleAct = new QAction(tr("&Open multiple..."), this);
-    connect(openMultipleAct, SIGNAL(triggered()), this, SLOT(openMultiple()));
-
 
     exitAct = new QAction(tr("E&xit"), this);
     exitAct->setShortcuts(QKeySequence::Quit);
@@ -145,46 +128,44 @@ void MainWindow::createActions()
     aboutQtAct = new QAction(tr("About &Qt"), this);
     connect(aboutQtAct, SIGNAL(triggered()), qApp, SLOT(aboutQt()));
 
-    inZoom=new QAction(tr("&Zoom in"),this);
+    inZoom = new QAction(tr("&Zoom in"), this);
     inZoom->setShortcut(tr("Ctrl++"));
-    connect(inZoom,SIGNAL(triggered()),this,SLOT(zoomIn()));
+    connect(inZoom, SIGNAL(triggered()), this, SLOT(zoomIn()));
 
-    outZoom=new QAction(tr("&Zoom out"),this);
+    outZoom = new QAction(tr("&Zoom out"), this);
     outZoom->setShortcut(tr("Ctrl+-"));
-    connect(outZoom,SIGNAL(triggered()),this,SLOT(zoomOut()));
+    connect(outZoom, SIGNAL(triggered()), this, SLOT(zoomOut()));
 
-    undoAct=new QAction(tr("&Undo"),this);
+    undoAct = new QAction(tr("&Undo"), this);
     undoAct->setShortcut(tr("Ctrl+Z"));
-    connect(undoAct,SIGNAL(triggered()),this,SLOT(undo()));
-    
-    redoAct=new QAction(tr("&Redo"),this);
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
+
+    redoAct = new QAction(tr("&Redo"), this);
     redoAct->setShortcut(tr("Ctrl+Y"));
-    connect(redoAct,SIGNAL(triggered()),this,SLOT(redo()));
+    connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
 
-    eraseAct=new QAction(tr("&Erase"),this);
-    connect(eraseAct,SIGNAL(triggered()),this,SLOT(erase()));
+    eraseAct = new QAction(tr("&Erase"), this);
+    connect(eraseAct, SIGNAL(triggered()), this, SLOT(erase()));
 
-    paintAct=new QAction(tr("&Paint"),this);
-    connect(paintAct,SIGNAL(triggered()),this,SLOT(paint()));
+    paintAct = new QAction(tr("&Paint"), this);
+    connect(paintAct, SIGNAL(triggered()), this, SLOT(paint()));
 
-    thresholdAct=new QAction(tr("&Change Threshold"),this);
-    connect(thresholdAct,SIGNAL(triggered()),this,SLOT(changeThreshold()));
+    thresholdAct = new QAction(tr("&Change Threshold"), this);
+    connect(thresholdAct, SIGNAL(triggered()), this, SLOT(changeThreshold()));
 
 }
 
-void MainWindow::paint(){
+void MainWindow::paint() {
     scribbleArea->paint();
 }
-void MainWindow::createMenus()
-{
+
+void MainWindow::createMenus() {
     saveAsMenu = new QMenu(tr("&Save As"), this);
-            foreach (QAction *action, saveAsActs)
-            saveAsMenu->addAction(action);
+            foreach (QAction *action, saveAsActs)saveAsMenu->addAction(action);
 
     fileMenu = new QMenu(tr("&File"), this);
     fileMenu->addAction(scratchAct);
     fileMenu->addAction(openAct);
-    //fileMenu->addAction(openMultipleAct);
 
     fileMenu->addMenu(saveAsMenu);
     fileMenu->addSeparator();
@@ -213,24 +194,24 @@ void MainWindow::createMenus()
     menuBar()->addMenu(optionMenu);
     menuBar()->addMenu(helpMenu);
 }
-void MainWindow::undo(){
+
+void MainWindow::undo() {
     scribbleArea->undo();
 }
 
-void MainWindow::redo(){
+void MainWindow::redo() {
     scribbleArea->redo();
 }
 
-void MainWindow::changeThreshold(){
+void MainWindow::changeThreshold() {
     scribbleArea->setThreshold();
 }
 
-void MainWindow::scratch(){
+void MainWindow::scratch() {
     scribbleArea->scratch();
 }
 
-bool MainWindow::maybeSave()
-{
+bool MainWindow::maybeSave() {
     if (scribbleArea->isModified()) {
         QMessageBox::StandardButton ret;
         ret = QMessageBox::warning(this, tr("Scribble"),
@@ -247,8 +228,7 @@ bool MainWindow::maybeSave()
     return true;
 }
 
-bool MainWindow::saveFile(const QByteArray &fileFormat)
-{
+bool MainWindow::saveFile(const QByteArray &fileFormat) {
     QString initialPath = QDir::currentPath() + "/untitled." + fileFormat;
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"),

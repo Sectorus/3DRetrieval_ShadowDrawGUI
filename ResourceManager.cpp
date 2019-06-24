@@ -22,24 +22,22 @@ ResourceManager *ResourceManager::instance() {
     return instance_;
 }
 
-std::vector<cv::Mat> ResourceManager::getResourceImages(){
+std::vector<cv::Mat> ResourceManager::getResourceImages() {
     return resource_images_;
 }
 
 void ResourceManager::loadResourcesFromDirectory(std::string path) {
     std::vector<std::string> stringvec;
-    DIR* dirp = opendir(path.c_str());
-    struct dirent * dp;
+    DIR *dirp = opendir(path.c_str());
+    struct dirent *dp;
     while ((dp = readdir(dirp)) != NULL) {
         stringvec.push_back(dp->d_name);
     }
     closedir(dirp);
 
-    for(int i = 2; i < stringvec.size(); i++)
-    {
+    for (int i = 2; i < stringvec.size(); i++) {
         auto file = stringvec.at(i);
-        cv::Mat m = cv::imread(path+"/"+file);
-       // std::cout <<"Resource "<< m.rows << "," << m.cols << std::endl;
+        cv::Mat m = cv::imread(path + "/" + file);
         resource_images_.push_back(m);
     }
 }
